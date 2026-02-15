@@ -15,6 +15,7 @@ export function Dashboard() {
   const colors = useThemeColors();
 
   useEffect(() => {
+    store.initTodayRecord();
     store.calculateStreak();
     store.updateMilestones();
     store.checkAndUpdateAchievements();

@@ -36,10 +36,8 @@ export function CheckIn() {
   }, [exerciseType, exerciseDuration, profile?.currentWeight]);
 
   useEffect(() => {
-    if (!todayRecord) {
-      setTodayRecord({ id: `record-${Date.now()}`, date: new Date().toISOString().split('T')[0], exerciseCompleted: false, exerciseDuration: 0, breakfastCompleted: false, lunchCompleted: false, dinnerCompleted: false, mood: 3, notes: '' });
-    }
-  }, [todayRecord, setTodayRecord]);
+    store.initTodayRecord();
+  }, []);
 
   useEffect(() => {
     if (profile?.currentWeight) setWeight(profile.currentWeight.toString());

@@ -144,6 +144,15 @@ export const useHealthStore = create<HealthState>()(
       completeOnboarding: () => set((state) => ({ profile: state.profile ? { ...state.profile, onboardingCompleted: true } : null })),
 
       setTodayRecord: (record) => set({ todayRecord: record }),
+      initTodayRecord: () => set((state) => {
+        const today = getTodayDate();
+        // 如果 todayRecord 不是今天的，则从 records 中查找今天的记录，或创建新的
+        if (state.todayRecord?.date !== today) {
+          const todayRecord = state.records[today];
+          return { todayRecord: todayRecord || { id: generateId(), date: today, exerciseCompleted: false, exerciseDuration: 0, breakfastCompleted: false, lunchCompleted: false, dinnerCompleted: false, mood: 3, notes: '' } };
+        }
+        return {};
+      }),
       updateTodayRecord: (updates) => set((state) => ({
         todayRecord: state.todayRecord ? { ...state.todayRecord, ...updates } : { id: generateId(), date: getTodayDate(), exerciseCompleted: false, exerciseDuration: 0, breakfastCompleted: false, lunchCompleted: false, dinnerCompleted: false, mood: 3, ...updates }
       })),
