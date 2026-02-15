@@ -138,7 +138,7 @@ export function Layout() {
             justifyContent: 'center',
             marginRight: 10
           }}>
-            <Heart size={16} color="white" />
+            <Heart size={18} color="white" />
           </div>
           <span style={{ fontSize: 17, fontWeight: 600, color: '#1d1d1f' }}>健康</span>
         </div>
@@ -176,11 +176,11 @@ export function Layout() {
         display: 'flex',
         justifyContent: 'space-around',
         paddingBottom: 'env(safe-area-inset-bottom)',
-        paddingTop: 8,
+        paddingTop: 6,
         zIndex: 100,
         height: 'calc(50px + env(safe-area-inset-bottom))'
       }}>
-        {navItems.slice(0, 5).map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
           return (
@@ -192,9 +192,9 @@ export function Layout() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '4px 8px',
+                padding: '6px 8px',
                 textDecoration: 'none',
-                minWidth: 50
+                minWidth: 44
               }}
             >
               <Icon

@@ -135,10 +135,10 @@ export function Reminders() {
                   <h3 style={{ fontSize: 17, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>{reminder.title}</h3>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 4 }}>
                     <span style={{ display: 'flex', alignItems: 'center', fontSize: 13, color: '#86868b' }}>
-                      <Clock size={14} style={{ marginRight: 4 }} />{reminder.time}
+                      <Clock size={16} style={{ marginRight: 4 }} />{reminder.time}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', fontSize: 13, color: '#86868b' }}>
-                      <Calendar size={14} style={{ marginRight: 4 }} />{getRepeatLabel(reminder.repeatPattern)}
+                      <Calendar size={16} style={{ marginRight: 4 }} />{getRepeatLabel(reminder.repeatPattern)}
                     </span>
                   </div>
                 </div>

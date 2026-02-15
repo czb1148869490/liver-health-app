@@ -57,7 +57,7 @@ export function Education() {
                 color: activeTab === tab.id ? 'white' : '#86868b',
               }}
             >
-              <Icon size={16} /> {tab.label}
+              <Icon size={18} /> {tab.label}
             </button>
           );
         })}

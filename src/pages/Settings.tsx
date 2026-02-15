@@ -7,7 +7,6 @@ import { useResponsive, useCardStyle } from '../hooks/useResponsive';
 export function SettingsPage() {
   const { profile, updateProfile, theme } = useHealthStore();
   const { isMobile } = useResponsive();
-  const cardStyle = useCardStyle();
   const [activeTab, setActiveTab] = useState('profile');
 
   if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: '#86868b' }}>请先在首页完成个人资料设置</div>;
@@ -110,6 +109,7 @@ function ProfileSettings({ profile, updateProfile }: {
   profile: NonNullable<ReturnType<typeof useHealthStore.getState>['profile']>;
   updateProfile: (updates: Partial<typeof profile>) => void;
 }) {
+  const cardStyle = useCardStyle();
   const [name, setName] = useState(profile.name);
   const [height, setHeight] = useState(profile.height.toString());
   const [currentWeight, setCurrentWeight] = useState(profile.currentWeight?.toString() || '');
@@ -204,6 +204,7 @@ function TargetSettings({ profile, updateProfile }: {
   profile: NonNullable<ReturnType<typeof useHealthStore.getState>['profile']>;
   updateProfile: (updates: Partial<typeof profile>) => void;
 }) {
+  const cardStyle = useCardStyle();
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
@@ -269,6 +270,7 @@ function TargetSettings({ profile, updateProfile }: {
 
 function DataSettings() {
   const { profile, records, checkups, exerciseLogs, weightLogs, currentStreak } = useHealthStore();
+  const cardStyle = useCardStyle();
 
   const handleExportPDF = () => {
     if (!profile) return;
@@ -385,7 +387,7 @@ function DataSettings() {
                   cursor: profile ? 'pointer' : 'not-allowed',
                 }}
               >
-                <FileText size={14} style={{ marginRight: 6 }} /> 导出PDF
+                <FileText size={16} style={{ marginRight: 6 }} /> 导出PDF
               </button>
             </div>
           </div>
@@ -445,7 +447,7 @@ function DataSettings() {
                   alignItems: 'center',
                 }}
               >
-                <Trash2 size={14} style={{ marginRight: 6 }} /> 清除
+                <Trash2 size={16} style={{ marginRight: 6 }} /> 清除
               </button>
             </div>
           </div>
@@ -460,6 +462,7 @@ function DataSettings() {
 
 function AppearanceSettings() {
   const { theme, setTheme } = useHealthStore();
+  const cardStyle = useCardStyle();
 
   const themeOptions = [
     { value: 'light', label: '浅色', icon: <Sun size={20} />, description: '使用浅色主题' },

@@ -74,21 +74,21 @@ export function Dashboard() {
       <div style={{ ...useGridStyle(3), marginBottom: isMobile ? 16 : 24 }}>
         <div style={{ ...cardStyle, background: 'linear-gradient(135deg, #007aff, #5856d6)', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Flame size={isMobile ? 22 : 28} />
+            <Flame size={isMobile ? 22 : 24} />
             <span style={{ fontSize: isMobile ? 28 : 40, fontWeight: 700 }}>{currentStreak}</span>
           </div>
           <p style={{ fontSize: isMobile ? 12 : 15, fontWeight: 500, marginTop: 8 }}>连续打卡天数</p>
         </div>
         <div style={{ ...cardStyle, background: 'linear-gradient(135deg, #34c759, #30d158)', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Target size={isMobile ? 22 : 28} />
+            <Target size={isMobile ? 22 : 24} />
             <span style={{ fontSize: isMobile ? 28 : 40, fontWeight: 700 }}>{weeklyExercise}</span>
           </div>
           <p style={{ fontSize: isMobile ? 12 : 15, fontWeight: 500, marginTop: 8 }}>本周运动(分钟)</p>
         </div>
         <div style={{ ...cardStyle, background: 'linear-gradient(135deg, #ff9500, #ff3b30)', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Trophy size={isMobile ? 22 : 28} />
+            <Trophy size={isMobile ? 22 : 24} />
             <span style={{ fontSize: isMobile ? 28 : 40, fontWeight: 700 }}>{points}</span>
           </div>
           <p style={{ fontSize: isMobile ? 12 : 15, fontWeight: 500, marginTop: 8 }}>积分</p>
@@ -100,7 +100,7 @@ export function Dashboard() {
         <Link to="/checkin" style={{ ...cardStyle, textDecoration: 'none', display: 'block', cursor: 'pointer' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
             <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(0,122,255,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Activity size={isMobile ? 20 : 24} color="#007aff" />
+              <Activity size={isMobile ? 20 : 22} color="#007aff" />
             </div>
             {todayRecord?.exerciseCompleted ? (
               <span className="badge badge-green">已完成</span>
@@ -111,14 +111,14 @@ export function Dashboard() {
           <h3 style={{ fontSize: isMobile ? 17 : 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>运动打卡</h3>
           <p style={{ fontSize: isMobile ? 13 : 15, color: '#86868b', margin: 0 }}>目标: {profile.targetExerciseMinutes} 分钟</p>
           <div style={{ display: 'flex', alignItems: 'center', color: '#007aff', fontSize: isMobile ? 13 : 15, fontWeight: 500, marginTop: isMobile ? 12 : 16 }}>
-            立即打卡 <ArrowRight size={16} style={{ marginLeft: 4 }} />
+            立即打卡 <ArrowRight size={18} style={{ marginLeft: 4 }} />
           </div>
         </Link>
 
         <Link to="/checkin" style={{ ...cardStyle, textDecoration: 'none', display: 'block', cursor: 'pointer' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
             <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(255,149,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <UtensilsCrossed size={isMobile ? 20 : 24} color="#ff9500" />
+              <UtensilsCrossed size={isMobile ? 20 : 22} color="#ff9500" />
             </div>
             <span style={{ fontSize: isMobile ? 13 : 15, color: '#86868b' }}>
               {((todayRecord?.breakfastCompleted ? 1 : 0) + (todayRecord?.lunchCompleted ? 1 : 0) + (todayRecord?.dinnerCompleted ? 1 : 0))}/3 餐
@@ -129,14 +129,14 @@ export function Dashboard() {
             早 {todayRecord?.breakfastCompleted ? '✓' : '○'} · 午 {todayRecord?.lunchCompleted ? '✓' : '○'} · 晚 {todayRecord?.dinnerCompleted ? '✓' : '○'}
           </p>
           <div style={{ display: 'flex', alignItems: 'center', color: '#ff9500', fontSize: isMobile ? 13 : 15, fontWeight: 500, marginTop: isMobile ? 12 : 16 }}>
-            记录饮食 <ArrowRight size={16} style={{ marginLeft: 4 }} />
+            记录饮食 <ArrowRight size={18} style={{ marginLeft: 4 }} />
           </div>
         </Link>
 
         <div style={{ ...cardStyle }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
             <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(175,82,222,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Scale size={isMobile ? 20 : 24} color="#af52de" />
+              <Scale size={isMobile ? 20 : 22} color="#af52de" />
             </div>
           </div>
           <h3 style={{ fontSize: isMobile ? 17 : 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>体重</h3>
@@ -145,7 +145,7 @@ export function Dashboard() {
           </p>
           {profile.initialWeight && (
             <p style={{ fontSize: 13, color: '#34c759', marginTop: 8, display: 'flex', alignItems: 'center' }}>
-              <TrendingDown size={14} style={{ marginRight: 4 }} />
+              <TrendingDown size={16} style={{ marginRight: 4 }} />
               {(((profile.initialWeight - profile.currentWeight) / profile.initialWeight) * 100).toFixed(1)}%
             </p>
           )}
@@ -154,7 +154,7 @@ export function Dashboard() {
         <div style={{ ...cardStyle }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
             <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(255,204,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Smile size={isMobile ? 20 : 24} color="#ffcc00" />
+              <Smile size={isMobile ? 20 : 22} color="#ffcc00" />
             </div>
           </div>
           <h3 style={{ fontSize: isMobile ? 17 : 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>心情</h3>

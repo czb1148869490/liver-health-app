@@ -17,8 +17,6 @@ const exerciseTypes: { type: ExerciseType; label: string; icon: string }[] = [
 const durations = [10, 20, 30, 45, 60];
 const moods = ['😢', '😕', '😐', '🙂', '😊'];
 
-const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
-
 export function CheckIn() {
   const store = useHealthStore();
   const { profile, todayRecord, setTodayRecord, saveRecord, addExerciseLog, addWeightLog, updateProfile } = store;
@@ -199,7 +197,7 @@ export function CheckIn() {
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
           <input type="number" value={weight} onChange={e => setWeight(e.target.value)} step="0.1" className="input" placeholder="今日体重" style={{ flex: 1 }} />
-          <button onClick={handleWeight} className="btn btn-primary"><Save size={16} style={{ marginRight: 6 }} />保存</button>
+          <button onClick={handleWeight} className="btn btn-primary"><Save size={18} style={{ marginRight: 6 }} />保存</button>
         </div>
         {profile.initialWeight && profile.currentWeight && (
           <p style={{ fontSize: 13, color: '#86868b', marginTop: 10 }}>初始: {profile.initialWeight} kg · 已减 <span style={{ color: '#34c759', fontWeight: 600 }}>{(((profile.initialWeight - profile.currentWeight) / profile.initialWeight) * 100).toFixed(1)}%</span></p>

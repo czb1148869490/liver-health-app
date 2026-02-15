@@ -1,5 +1,20 @@
 import { useState, useEffect } from 'react';
 
+// 统一图标大小规范（基于 iOS HIG）
+export const ICON_SIZES = {
+  nav: { mobile: 22, desktop: 24 },
+  primary: { mobile: 22, desktop: 24 },
+  secondary: { mobile: 20, desktop: 22 },
+  arrow: { mobile: 18, desktop: 20 },
+  small: { mobile: 16, desktop: 18 },
+  tiny: { mobile: 14, desktop: 16 },
+};
+
+export function useIconSize(type: keyof typeof ICON_SIZES) {
+  const { isMobile } = useResponsive();
+  return isMobile ? ICON_SIZES[type].mobile : ICON_SIZES[type].desktop;
+}
+
 // 响应式布局 hook
 export function useResponsive() {
   const [isMobile, setIsMobile] = useState(false);

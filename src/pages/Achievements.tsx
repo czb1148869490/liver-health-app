@@ -47,17 +47,17 @@ export function Achievements() {
       {/* Stats Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 28 }}>
         <div style={{ background: 'linear-gradient(135deg, #ffcc00, #ff9500)', borderRadius: 20, padding: 24, color: 'white' }}>
-          <Trophy size={32} style={{ opacity: 0.8, marginBottom: 8 }} />
+          <Trophy size={28} style={{ opacity: 0.8, marginBottom: 8 }} />
           <p style={{ fontSize: 36, fontWeight: 700, margin: 0 }}>{points}</p>
           <p style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>当前积分</p>
         </div>
         <div style={{ background: 'linear-gradient(135deg, #34c759, #30d158)', borderRadius: 20, padding: 24, color: 'white' }}>
-          <Star size={32} style={{ opacity: 0.8, marginBottom: 8 }} />
+          <Star size={28} style={{ opacity: 0.8, marginBottom: 8 }} />
           <p style={{ fontSize: 36, fontWeight: 700, margin: 0 }}>{totalPoints}</p>
           <p style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>累计获得</p>
         </div>
         <div style={{ background: 'linear-gradient(135deg, #007aff, #5856d6)', borderRadius: 20, padding: 24, color: 'white' }}>
-          <Trophy size={32} style={{ opacity: 0.8, marginBottom: 8 }} />
+          <Trophy size={28} style={{ opacity: 0.8, marginBottom: 8 }} />
           <p style={{ fontSize: 36, fontWeight: 700, margin: 0 }}>{unlockedCount}/{achievements.length}</p>
           <p style={{ fontSize: 14, opacity: 0.9, marginTop: 4 }}>解锁成就</p>
         </div>
