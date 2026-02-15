@@ -96,6 +96,7 @@ interface HealthState {
   // 通知相关
   notificationPermission: boolean;
   lastNotificationDate: string;
+  sentRemindersToday: string[];
   requestNotification: () => Promise<void>;
   checkReminders: () => void;
   notifyAchievement: (title: string, points: number) => void;
@@ -138,6 +139,7 @@ export const useHealthStore = create<HealthState>()(
       milestones: [],
       notificationPermission: false,
       lastNotificationDate: '',
+      sentRemindersToday: [],
 
       setProfile: (profile) => set({ profile }),
       updateProfile: (updates) => set((state) => ({ profile: state.profile ? { ...state.profile, ...updates } : null })),
@@ -235,9 +237,13 @@ export const useHealthStore = create<HealthState>()(
       getWeeklyExercise: () => {
         const { exerciseLogs } = get();
         const today = new Date();
-        const weekAgo = new Date(today);
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        return exerciseLogs.filter((log) => new Date(log.date) >= weekAgo).reduce((sum, log) => sum + log.duration, 0);
+        const dates: string[] = [];
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          dates.push(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`);
+        }
+        return exerciseLogs.filter((log) => dates.includes(log.date)).reduce((sum, log) => sum + log.duration, 0);
       },
 
       checkAndUpdateAchievements: () => {
@@ -272,18 +278,23 @@ export const useHealthStore = create<HealthState>()(
       },
 
       checkReminders: () => {
-        const { reminders, todayRecord, profile, lastNotificationDate } = get();
+        const { reminders, todayRecord, profile, lastNotificationDate, sentRemindersToday } = get();
         const now = new Date();
         const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         const currentMinute = now.getHours() * 60 + now.getMinutes();
 
-        // 如果是同一天已经发送过通知，跳过
-        if (lastNotificationDate === today) return;
+        // 如果日期变化了，重置已发送的提醒列表
+        let sentReminders = lastNotificationDate === today ? [...sentRemindersToday] : [];
+        if (lastNotificationDate !== today) {
+          set({ lastNotificationDate: today, sentRemindersToday: [] });
+        }
 
         reminders.forEach((reminder) => {
           if (!reminder.enabled) return;
           if (reminder.time !== currentTime) return;
+          // 检查这个提醒今天是否已经发送过
+          if (sentReminders.includes(reminder.id)) return;
 
           switch (reminder.type) {
             case 'exercise':
@@ -297,20 +308,33 @@ export const useHealthStore = create<HealthState>()(
             default:
               sendNotification(reminder.title, { body: reminder.description });
           }
+
+          // 标记该提醒已发送
+          sentReminders.push(reminder.id);
         });
 
-        // 检查是否需要提醒用餐 (只在整点的前5分钟内检查)
-        const hour = now.getHours();
-        if (currentMinute % 60 < 5) { // 只在每小时的0-4分钟发送
-          if (hour === 7 && !todayRecord?.breakfastCompleted) {
+        // 更新已发送的提醒列表
+        if (sentReminders.length > 0) {
+          set({ sentRemindersToday: sentReminders });
+        }
+
+        // 检查是否需要提醒用餐 (只在每小时的0-4分钟内检查)
+        if (currentMinute < 5) {
+          const hour = now.getHours();
+          if (hour === 7 && !todayRecord?.breakfastCompleted && !sentReminders.includes('meal_breakfast')) {
             ReminderNotifications.breakfast();
-            set({ lastNotificationDate: today });
-          } else if (hour === 12 && !todayRecord?.lunchCompleted) {
+            sentReminders.push('meal_breakfast');
+          } else if (hour === 12 && !todayRecord?.lunchCompleted && !sentReminders.includes('meal_lunch')) {
             ReminderNotifications.lunch();
-            set({ lastNotificationDate: today });
-          } else if (hour === 18 && !todayRecord?.dinnerCompleted) {
+            sentReminders.push('meal_lunch');
+          } else if (hour === 18 && !todayRecord?.dinnerCompleted && !sentReminders.includes('meal_dinner')) {
             ReminderNotifications.dinner();
-            set({ lastNotificationDate: today });
+            sentReminders.push('meal_dinner');
+          }
+
+          // 更新已发送的提醒列表
+          if (sentReminders.length > 0) {
+            set({ sentRemindersToday: sentReminders });
           }
         }
       },
