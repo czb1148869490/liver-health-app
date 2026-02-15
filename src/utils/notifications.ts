@@ -1,12 +1,12 @@
 // 浏览器通知工具模块
 
-export interface NotificationPermission {
-  status: NotificationPermissionStatus;
+export interface NotificationPermissionResult {
+  status: NotificationPermission;
   canRequest: boolean;
 }
 
 // 请求通知权限
-export const requestNotificationPermission = async (): Promise<NotificationPermissionStatus> => {
+export const requestNotificationPermission = async (): Promise<NotificationPermission> => {
   if (!('Notification' in window)) {
     console.warn('此浏览器不支持通知功能');
     return 'denied';

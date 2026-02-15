@@ -11,7 +11,7 @@ import { Education } from './pages/Education'
 import { useHealthStore } from './stores/healthStore'
 
 function App() {
-  const { requestNotification, checkReminders, notificationPermission, theme, setTheme } = useHealthStore();
+  const { requestNotification, checkReminders, notificationPermission, theme } = useHealthStore();
 
   useEffect(() => {
     // 初始化主题

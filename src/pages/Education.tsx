@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useHealthStore } from '../stores/healthStore';
-import { BookOpen, Lightbulb, Target, Utensils, Activity, FileText, ChevronRight, X, Dumbbell } from 'lucide-react';
+import { BookOpen, Lightbulb, Target, Utensils, Activity, ChevronRight, X, Dumbbell } from 'lucide-react';
 import { healthArticles, getCategoryName, Article } from '../data/healthArticles';
-import { getTodayTip, dailyTips, getCategoryName as getTipCategoryName } from '../data/dailyTips';
-import { generateExercisePrescription, calculateBMI, getBMICategory, getIntensityLabel } from '../utils/exercisePrescription';
+import { getTodayTip, getCategoryName as getTipCategoryName } from '../data/dailyTips';
+import { generateExercisePrescription, calculateBMI, getBMICategory } from '../utils/exercisePrescription';
 import { weeklyMealPlan, foodRecommendations, getTodayDietTip } from '../data/dietaryGuide';
 import { healthIndicators, getCategoryName as getIndicatorCategoryName, getCategoryIcon } from '../data/healthIndicators';
 
@@ -223,7 +223,7 @@ export function Education() {
 
       {activeTab === 'articles' && (
         <div>
-          {healthArticles.map((article, i) => (
+          {healthArticles.map((article) => (
             <div
               key={article.id}
               style={{ ...cardStyle, marginBottom: 16, cursor: 'pointer' }}

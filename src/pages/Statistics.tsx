@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useHealthStore } from '../stores/healthStore';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendingDown, Activity, Calendar, Target, Flame } from 'lucide-react';
+import { TrendingDown, Activity, Calendar, Flame } from 'lucide-react';
 
 const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
 

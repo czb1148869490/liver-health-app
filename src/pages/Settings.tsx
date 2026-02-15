@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useHealthStore } from '../stores/healthStore';
-import { User, Target, Download, Trash2, Heart, Info, ChevronRight, Check, Moon, Sun, Monitor, FileText } from 'lucide-react';
+import { User, Target, Download, Trash2, Heart, Info, Check, Moon, Sun, Monitor, FileText } from 'lucide-react';
 import { generateMedicalReport } from '../utils/pdfExport';
 
 const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
 
 export function SettingsPage() {
-  const { profile, updateProfile, theme, setTheme } = useHealthStore();
+  const { profile, updateProfile, theme } = useHealthStore();
   const [activeTab, setActiveTab] = useState('profile');
 
   if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: '#86868b' }}>请先在首页完成个人资料设置</div>;

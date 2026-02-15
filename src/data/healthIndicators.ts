@@ -174,7 +174,7 @@ export const getCategoryIcon = (category: Indicator['category']): string => {
 export const getIndicatorStatus = (
   value: number,
   normal: string,
-  warning: string,
+  _warning: string,
   danger: string
 ): 'normal' | 'warning' | 'danger' => {
   const normalMax = parseFloat(normal.replace('<', ''));

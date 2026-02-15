@@ -4,7 +4,7 @@ import type { ExerciseType, Mood } from '../types/health';
 import { Activity, UtensilsCrossed, Scale, Smile, Save, Check } from 'lucide-react';
 import { calculateCalories } from '../utils/calories';
 
-const exerciseTypes = [
+const exerciseTypes: { type: ExerciseType; label: string; icon: string }[] = [
   { type: 'walking', label: '快走', icon: '🚶' },
   { type: 'jogging', label: '慢跑', icon: '🏃' },
   { type: 'cycling', label: '骑行', icon: '🚴' },

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useHealthStore } from '../stores/healthStore';
-import { Activity, UtensilsCrossed, Scale, Smile, ArrowRight, Flame, TrendingDown, Target, Trophy, Heart, Lightbulb } from 'lucide-react';
+import { Activity, UtensilsCrossed, Scale, Smile, ArrowRight, Flame, TrendingDown, Target, Trophy, Heart } from 'lucide-react';
 import { getTodayTip } from '../data/dailyTips';
 
 export function Dashboard() {

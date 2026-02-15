@@ -39,7 +39,6 @@ export const getBMICategory = (bmi: number): { category: string; color: string }
 // 生成个性化运动处方
 export const generateExercisePrescription = (profile: Profile): ExercisePrescription => {
   const bmi = calculateBMI(profile.height, profile.currentWeight);
-  const bmiCategory = getBMICategory(bmi);
 
   // 根据BMI和脂肪肝程度确定运动级别
   let level: 'beginner' | 'intermediate' | 'advanced';
@@ -88,7 +87,7 @@ export const generateExercisePrescription = (profile: Profile): ExercisePrescrip
 // 获取推荐运动
 const getRecommendedExercises = (
   level: 'beginner' | 'intermediate' | 'advanced',
-  fattyLiverLevel: string
+  _fattyLiverLevel: string
 ): ExerciseRecommendation[] => {
   const allExercises: ExerciseRecommendation[] = [
     {
