@@ -6,26 +6,26 @@ export interface NotificationPermissionResult {
 }
 
 // 请求通知权限
-export const requestNotificationPermission = async (): Promise<NotificationPermission> => {
+export const requestNotificationPermission = async (): Promise<NotificationPermissionResult> => {
   if (!('Notification' in window)) {
     console.warn('此浏览器不支持通知功能');
-    return 'denied';
+    return { status: 'denied', canRequest: false };
   }
 
   if (Notification.permission === 'granted') {
-    return 'granted';
+    return { status: 'granted', canRequest: false };
   }
 
   if (Notification.permission !== 'denied') {
     const permission = await Notification.requestPermission();
-    return permission;
+    return { status: permission, canRequest: permission === 'default' };
   }
 
-  return Notification.permission;
+  return { status: Notification.permission, canRequest: false };
 };
 
 // 检查当前通知权限状态
-export const checkNotificationPermission = (): NotificationPermission => {
+export const checkNotificationPermission = (): NotificationPermissionResult => {
   if (!('Notification' in window)) {
     return { status: 'denied', canRequest: false };
   }
@@ -59,7 +59,7 @@ export const sendNotification = (title: string, options?: NotificationOptions): 
 
 // 安排定时通知
 export const scheduleNotification = (
-  id: string,
+  _id: string,
   title: string,
   time: string, // HH:mm 格式
   options?: NotificationOptions

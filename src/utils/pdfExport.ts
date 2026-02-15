@@ -12,7 +12,7 @@ interface ReportData {
 }
 
 export const generateMedicalReport = (data: ReportData): void => {
-  const { profile, records, checkups, exerciseLogs, weightLogs, currentStreak } = data;
+  const { profile, checkups, exerciseLogs, weightLogs, currentStreak } = data;
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
