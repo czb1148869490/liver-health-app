@@ -259,7 +259,7 @@ export const useHealthStore = create<HealthState>()(
 
       requestNotification: async () => {
         const permission = await requestNotificationPermission();
-        set({ notificationPermission: permission === 'granted' });
+        set({ notificationPermission: permission.status === 'granted' });
       },
 
       checkReminders: () => {
