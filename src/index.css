@@ -3,125 +3,210 @@
 :root {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
   font-weight: 400;
-  color: #1d1d1f;
-  background: #ffffff;
+
+  /* Base colors - Light Mode */
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f5f5f7;
+  --color-bg-tertiary: #f2f2f7;
+  --color-bg-elevated: #ffffff;
+
+  /* Text colors - Light Mode */
+  --color-text: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #aeaeb2;
+  --color-text-placeholder: #aeaeb2;
+
+  /* Border colors - Light Mode */
+  --color-border: #e5e5ea;
+  --color-border-secondary: #d1d1d6;
+
+  /* Brand colors */
+  --color-primary: #007aff;
+  --color-success: #34c759;
+  --color-warning: #ff9500;
+  --color-danger: #ff3b30;
+  --color-purple: #af52de;
+  --color-yellow: #ffcc00;
+
+  /* Component specific */
+  --color-card-bg: #ffffff;
+  --color-card-shadow: rgba(0,0,0,0.08);
+  --color-input-bg: #f2f2f7;
+  --color-input-border: #d1d1d6;
+  --color-progress-bg: #e5e5ea;
+
+  /* Specific UI elements */
+  --color-badge-green-bg: rgba(52, 199, 89, 0.15);
+  --color-badge-green-text: #34c759;
+  --color-badge-orange-bg: rgba(255, 149, 0, 0.15);
+  --color-badge-orange-text: #ff9500;
+  --color-badge-blue-bg: rgba(0, 122, 255, 0.15);
+  --color-badge-blue-text: #007aff;
+
+  /* Chart colors */
+  --color-chart-grid: #f0f0f0;
+  --color-chart-axis: #9ca3af;
+
+  color: var(--color-text);
+  background: var(--color-bg);
 }
 
 /* Dark Mode */
 .dark {
-  color: #f5f5f7;
-  background: #000000;
+  /* Base colors - Dark Mode */
+  --color-bg: #000000;
+  --color-bg-secondary: #1c1c1e;
+  --color-bg-tertiary: #2c2c2e;
+  --color-bg-elevated: #1c1c1e;
+
+  /* Text colors - Dark Mode */
+  --color-text: #f5f5f7;
+  --color-text-secondary: #98989d;
+  --color-text-tertiary: #636366;
+  --color-text-placeholder: #636366;
+
+  /* Border colors - Dark Mode */
+  --color-border: #3a3a3c;
+  --color-border-secondary: #3a3a3c;
+
+  /* Component specific */
+  --color-card-bg: #1c1c1e;
+  --color-card-shadow: rgba(0,0,0,0.3);
+  --color-input-bg: #2c2c2e;
+  --color-input-border: #3a3a3c;
+  --color-progress-bg: #3a3a3c;
+
+  /* Specific UI elements */
+  --color-badge-green-bg: rgba(52, 199, 89, 0.2);
+  --color-badge-green-text: #30d158;
+  --color-badge-orange-bg: rgba(255, 149, 0, 0.2);
+  --color-badge-orange-text: #ff9f0a;
+  --color-badge-blue-bg: rgba(0, 122, 255, 0.2);
+  --color-badge-blue-text: #0a84ff;
+
+  /* Chart colors */
+  --color-chart-grid: #3a3a3c;
+  --color-chart-axis: #636366;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .dark body {
-  background: #000000;
-  color: #f5f5f7;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+#root {
+  background: var(--color-bg);
 }
 
 .dark #root {
-  background: #000000;
+  background: var(--color-bg);
 }
 
 /* Dark Mode Colors */
 .dark .card {
-  background: #1c1c1e;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  background: var(--color-card-bg);
+  box-shadow: 0 2px 12px var(--color-card-shadow);
 }
 
 .dark .input {
-  background: #2c2c2e;
-  border-color: #3a3a3c;
-  color: #f5f5f7;
+  background: var(--color-input-bg);
+  border-color: var(--color-input-border);
+  color: var(--color-text);
 }
 
 .dark .input:focus {
-  background: #1c1c1e;
+  background: var(--color-bg-tertiary);
 }
 
 .dark select.input {
-  background: #2c2c2e;
-  border-color: #3a3a3c;
-  color: #f5f5f7;
+  background: var(--color-input-bg);
+  border-color: var(--color-input-border);
+  color: var(--color-text);
 }
 
 /* Dark Mode Layout */
 .dark aside {
-  background: #1c1c1e !important;
-  border-right-color: #3a3a3c !important;
+  background: var(--color-bg-secondary) !important;
+  border-right-color: var(--color-border) !important;
 }
 
 .dark main {
-  background: #000000;
+  background: var(--color-bg);
 }
 
 /* Form elements in dark mode */
 .dark input, .dark select, .dark textarea {
-  background: #2c2c2e !important;
-  border-color: #3a3a3c !important;
-  color: #f5f5f7 !important;
+  background: var(--color-input-bg) !important;
+  border-color: var(--color-input-border) !important;
+  color: var(--color-text) !important;
 }
 
 .dark input::placeholder {
-  color: #636366;
+  color: var(--color-text-tertiary);
 }
 
 .dark select option {
-  background: #2c2c2e;
-  color: #f5f5f7;
+  background: var(--color-input-bg);
+  color: var(--color-text);
 }
 
 /* Background variations */
 .dark [style*="background: white"],
 .dark [style*="background:#ffffff"],
 .dark [style*="background: #ffffff"] {
-  background: #1c1c1e !important;
+  background: var(--color-bg-secondary) !important;
 }
 
 .dark [style*="background: #f2f2f7"],
 .dark [style*="background:#f2f2f7"],
 .dark [style*="background: #f2f2f7"] {
-  background: #2c2c2e !important;
+  background: var(--color-bg-tertiary) !important;
 }
 
 .dark [style*="background: #f0f0f0"] {
-  background: #3a3a3c !important;
+  background: var(--color-border) !important;
 }
 
 /* Text colors */
 .dark [style*="color: #1d1d1f"] {
-  color: #f5f5f7 !important;
+  color: var(--color-text) !important;
 }
 
 .dark [style*="color: #86868b"],
 .dark [style*="color:#86868b"],
 .dark [style*="color: #86868b"] {
-  color: #98989d !important;
+  color: var(--color-text-secondary) !important;
 }
 
 .dark [style*="color: #aeaeb2"] {
-  color: #636366 !important;
+  color: var(--color-text-tertiary) !important;
 }
 
 /* Border colors */
 .dark [style*="border"] {
-  border-color: #3a3a3c !important;
+  border-color: var(--color-border) !important;
 }
 
 /* Progress bar */
 .dark .progress {
-  background: #3a3a3c;
+  background: var(--color-progress-bg);
 }
 
 /* Link colors */
 .dark a {
-  color: #0a84ff;
+  color: var(--color-primary);
 }
 
 /* Apple Card */
 .card {
-  background: white;
+  background: var(--color-card-bg);
   border-radius: 18px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px var(--color-card-shadow);
   padding: 20px;
 }
 
@@ -140,7 +225,7 @@
 }
 
 .btn-primary {
-  background: #007aff;
+  background: var(--color-primary);
   color: white;
 }
 
@@ -153,22 +238,22 @@
   width: 100%;
   padding: 16px;
   border-radius: 12px;
-  border: 1px solid #d1d1d6;
+  border: 1px solid var(--color-input-border);
   font-size: 17px;
-  background: #f2f2f7;
+  background: var(--color-input-bg);
   transition: all 0.2s;
 }
 
 .input:focus {
-  border-color: #007aff;
+  border-color: var(--color-primary);
   outline: none;
-  background: #ffffff;
+  background: var(--color-bg-elevated);
 }
 
 /* Progress */
 .progress {
   height: 6px;
-  background: #e5e5ea;
+  background: var(--color-progress-bg);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -189,18 +274,18 @@
 }
 
 .badge-green {
-  background: rgba(52, 199, 89, 0.15);
-  color: #34c759;
+  background: var(--color-badge-green-bg);
+  color: var(--color-badge-green-text);
 }
 
 .badge-orange {
-  background: rgba(255, 149, 0, 0.15);
-  color: #ff9500;
+  background: var(--color-badge-orange-bg);
+  color: var(--color-badge-orange-text);
 }
 
 .badge-blue {
-  background: rgba(0, 122, 255, 0.15);
-  color: #007aff;
+  background: var(--color-badge-blue-bg);
+  color: var(--color-badge-blue-text);
 }
 
 /* Stats */
@@ -218,4 +303,31 @@
 
 .animate-in {
   animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Mobile sidebar */
+.dark .mobile-sidebar {
+  background: var(--color-bg-secondary) !important;
+}
+
+/* Tab bar - mobile */
+.dark nav[class*="fixed"],
+.dark nav[class*="bottom"] {
+  background: var(--color-bg-secondary) !important;
+  border-top-color: var(--color-border) !important;
+}
+
+/* Overlay */
+.dark [style*="background: rgba(0,0,0,0.5)"] {
+  background: rgba(0,0,0,0.7) !important;
+}
+
+/* Modal */
+.dark [style*="background: 'white'"] {
+  background: var(--color-bg-secondary) !important;
+}
+
+/* Stats card gradient backgrounds - keep them but adjust text */
+.dark .gradient-card {
+  color: white;
 }

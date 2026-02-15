@@ -2,22 +2,23 @@ import { useState } from 'react';
 import { useHealthStore } from '../stores/healthStore';
 import { User, Target, Download, Trash2, Heart, Info, Check, Moon, Sun, Monitor, FileText } from 'lucide-react';
 import { generateMedicalReport } from '../utils/pdfExport';
-import { useResponsive, useCardStyle } from '../hooks/useResponsive';
+import { useResponsive, useCardStyle, useThemeColors } from '../hooks/useResponsive';
 
 export function SettingsPage() {
   const { profile, updateProfile, theme } = useHealthStore();
   const { isMobile } = useResponsive();
+  const colors = useThemeColors();
   const [activeTab, setActiveTab] = useState('profile');
 
-  if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: '#86868b' }}>请先在首页完成个人资料设置</div>;
+  if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: colors.textSecondary }}>请先在首页完成个人资料设置</div>;
 
   return (
     <div style={{ maxWidth: isMobile ? '100%' : 800, margin: '0 auto' }}>
-      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', marginBottom: isMobile ? 16 : 24 }}>设置</h1>
-      <div style={{ display: 'flex', gap: 24 }}>
+      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: colors.text, marginBottom: isMobile ? 16 : 24 }}>设置</h1>
+      <div style={{ display: 'flex', gap: 24, flexDirection: isMobile ? 'column' : 'row' }}>
         {/* Sidebar */}
-        <div style={{ width: 200, flexShrink: 0 }}>
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div style={{ width: isMobile ? '100%' : 200, flexShrink: 0 }}>
+          <nav style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: 4, flexWrap: 'wrap' }}>
             <button
               onClick={() => setActiveTab('profile')}
               style={{
@@ -31,7 +32,9 @@ export function SettingsPage() {
                 cursor: 'pointer',
                 textAlign: 'left',
                 background: activeTab === 'profile' ? 'rgba(0,122,255,0.1)' : 'transparent',
-                color: activeTab === 'profile' ? '#007aff' : '#86868b',
+                color: activeTab === 'profile' ? colors.primary : colors.textSecondary,
+                flex: isMobile ? '1' : 'none',
+                minWidth: isMobile ? 'auto' : 180,
               }}
             >
               <User size={18} style={{ marginRight: 10 }} /> 个人资料
@@ -49,7 +52,9 @@ export function SettingsPage() {
                 cursor: 'pointer',
                 textAlign: 'left',
                 background: activeTab === 'target' ? 'rgba(0,122,255,0.1)' : 'transparent',
-                color: activeTab === 'target' ? '#007aff' : '#86868b',
+                color: activeTab === 'target' ? colors.primary : colors.textSecondary,
+                flex: isMobile ? '1' : 'none',
+                minWidth: isMobile ? 'auto' : 180,
               }}
             >
               <Target size={18} style={{ marginRight: 10 }} /> 目标设置
@@ -67,7 +72,9 @@ export function SettingsPage() {
                 cursor: 'pointer',
                 textAlign: 'left',
                 background: activeTab === 'data' ? 'rgba(0,122,255,0.1)' : 'transparent',
-                color: activeTab === 'data' ? '#007aff' : '#86868b',
+                color: activeTab === 'data' ? colors.primary : colors.textSecondary,
+                flex: isMobile ? '1' : 'none',
+                minWidth: isMobile ? 'auto' : 180,
               }}
             >
               <Download size={18} style={{ marginRight: 10 }} /> 数据管理
@@ -85,7 +92,9 @@ export function SettingsPage() {
                 cursor: 'pointer',
                 textAlign: 'left',
                 background: activeTab === 'appearance' ? 'rgba(0,122,255,0.1)' : 'transparent',
-                color: activeTab === 'appearance' ? '#007aff' : '#86868b',
+                color: activeTab === 'appearance' ? colors.primary : colors.textSecondary,
+                flex: isMobile ? '1' : 'none',
+                minWidth: isMobile ? 'auto' : 180,
               }}
             >
               {theme === 'dark' ? <Moon size={18} style={{ marginRight: 10 }} /> : <Sun size={18} style={{ marginRight: 10 }} />} 外观
@@ -95,19 +104,20 @@ export function SettingsPage() {
 
         {/* Content */}
         <div style={{ flex: 1 }}>
-          {activeTab === 'profile' && <ProfileSettings profile={profile} updateProfile={updateProfile} />}
-          {activeTab === 'target' && <TargetSettings profile={profile} updateProfile={updateProfile} />}
-          {activeTab === 'data' && <DataSettings />}
-          {activeTab === 'appearance' && <AppearanceSettings />}
+          {activeTab === 'profile' && <ProfileSettings profile={profile} updateProfile={updateProfile} colors={colors} />}
+          {activeTab === 'target' && <TargetSettings profile={profile} updateProfile={updateProfile} colors={colors} />}
+          {activeTab === 'data' && <DataSettings colors={colors} />}
+          {activeTab === 'appearance' && <AppearanceSettings colors={colors} />}
         </div>
       </div>
     </div>
   );
 }
 
-function ProfileSettings({ profile, updateProfile }: {
+function ProfileSettings({ profile, updateProfile, colors }: {
   profile: NonNullable<ReturnType<typeof useHealthStore.getState>['profile']>;
   updateProfile: (updates: Partial<typeof profile>) => void;
+  colors: ReturnType<typeof useThemeColors>;
 }) {
   const cardStyle = useCardStyle();
   const [name, setName] = useState(profile.name);
@@ -124,10 +134,10 @@ function ProfileSettings({ profile, updateProfile }: {
   return (
     <div>
       <div style={{ ...cardStyle, marginBottom: 20 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', marginBottom: 20 }}>个人资料</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, marginBottom: 20 }}>个人资料</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>姓名</label>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: colors.text, marginBottom: 8 }}>姓名</label>
             <input
               type="text"
               value={name}
@@ -138,7 +148,7 @@ function ProfileSettings({ profile, updateProfile }: {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>身高 (cm)</label>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: colors.text, marginBottom: 8 }}>身高 (cm)</label>
             <input
               type="number"
               value={height}
@@ -149,7 +159,7 @@ function ProfileSettings({ profile, updateProfile }: {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>当前体重 (kg)</label>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: colors.text, marginBottom: 8 }}>当前体重 (kg)</label>
             <input
               type="number"
               value={currentWeight}
@@ -161,7 +171,7 @@ function ProfileSettings({ profile, updateProfile }: {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>脂肪肝程度</label>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: colors.text, marginBottom: 8 }}>脂肪肝程度</label>
             <select
               value={profile.fattyLiverLevel}
               onChange={(e) => updateProfile({ fattyLiverLevel: e.target.value as typeof profile.fattyLiverLevel })}
@@ -174,7 +184,7 @@ function ProfileSettings({ profile, updateProfile }: {
           </div>
         </div>
         {saved && (
-          <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', color: '#34c759', fontSize: 14 }}>
+          <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', color: colors.success, fontSize: 14 }}>
             <Check size={16} style={{ marginRight: 6 }} /> 保存成功
           </div>
         )}
@@ -183,10 +193,10 @@ function ProfileSettings({ profile, updateProfile }: {
       {/* Health Info */}
       <div style={{ padding: 20, background: 'rgba(0,122,255,0.08)', borderRadius: 16 }}>
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-          <Info size={20} color="#007aff" style={{ marginRight: 12, marginTop: 2 }} />
+          <Info size={20} color={colors.primary} style={{ marginRight: 12, marginTop: 2 }} />
           <div>
-            <h4 style={{ fontSize: 15, fontWeight: 600, color: '#007aff', margin: '0 0 8px 0' }}>健康信息</h4>
-            <ul style={{ fontSize: 14, color: '#007aff', margin: 0, paddingLeft: 16, lineHeight: 1.8 }}>
+            <h4 style={{ fontSize: 15, fontWeight: 600, color: colors.primary, margin: '0 0 8px 0' }}>健康信息</h4>
+            <ul style={{ fontSize: 14, color: colors.primary, margin: 0, paddingLeft: 16, lineHeight: 1.8 }}>
               <li>初始体重: {profile.initialWeight} kg</li>
               {profile.currentWeight && profile.initialWeight && (
                 <li>已减重: {(((profile.initialWeight - profile.currentWeight) / profile.initialWeight) * 100).toFixed(1)}% ({(profile.initialWeight - profile.currentWeight).toFixed(1)} kg)</li>
@@ -200,9 +210,10 @@ function ProfileSettings({ profile, updateProfile }: {
   );
 }
 
-function TargetSettings({ profile, updateProfile }: {
+function TargetSettings({ profile, updateProfile, colors }: {
   profile: NonNullable<ReturnType<typeof useHealthStore.getState>['profile']>;
   updateProfile: (updates: Partial<typeof profile>) => void;
+  colors: ReturnType<typeof useThemeColors>;
 }) {
   const cardStyle = useCardStyle();
   const [saved, setSaved] = useState(false);
@@ -215,10 +226,10 @@ function TargetSettings({ profile, updateProfile }: {
   return (
     <div>
       <div style={{ ...cardStyle, marginBottom: 20 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', marginBottom: 20 }}>目标设置</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, marginBottom: 20 }}>目标设置</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>目标体重 (kg)</label>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: colors.text, marginBottom: 8 }}>目标体重 (kg)</label>
             <input
               type="number"
               defaultValue={profile.targetWeight}
@@ -229,7 +240,7 @@ function TargetSettings({ profile, updateProfile }: {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>每日运动目标 (分钟)</label>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 500, color: colors.text, marginBottom: 8 }}>每日运动目标 (分钟)</label>
             <select
               defaultValue={profile.targetExerciseMinutes}
               onChange={(e) => { updateProfile({ targetExerciseMinutes: parseInt(e.target.value) }); handleSave(); }}
@@ -245,7 +256,7 @@ function TargetSettings({ profile, updateProfile }: {
           </div>
         </div>
         {saved && (
-          <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', color: '#34c759', fontSize: 14 }}>
+          <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', color: colors.success, fontSize: 14 }}>
             <Check size={16} style={{ marginRight: 6 }} /> 保存成功
           </div>
         )}
@@ -253,10 +264,10 @@ function TargetSettings({ profile, updateProfile }: {
 
       <div style={{ padding: 20, background: 'rgba(52,199,89,0.08)', borderRadius: 16 }}>
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-          <Heart size={20} color="#34c759" style={{ marginRight: 12, marginTop: 2 }} />
+          <Heart size={20} color={colors.success} style={{ marginRight: 12, marginTop: 2 }} />
           <div>
-            <h4 style={{ fontSize: 15, fontWeight: 600, color: '#34c759', margin: '0 0 8px 0' }}>医学建议</h4>
-            <ul style={{ fontSize: 14, color: '#34c759', margin: 0, paddingLeft: 16, lineHeight: 1.8 }}>
+            <h4 style={{ fontSize: 15, fontWeight: 600, color: colors.success, margin: '0 0 8px 0' }}>医学建议</h4>
+            <ul style={{ fontSize: 14, color: colors.success, margin: 0, paddingLeft: 16, lineHeight: 1.8 }}>
               <li>每周运动 150-300 分钟可改善脂肪肝</li>
               <li>减重 5-10% 可显著改善病情</li>
               <li>建议配合地中海饮食</li>
@@ -268,7 +279,7 @@ function TargetSettings({ profile, updateProfile }: {
   );
 }
 
-function DataSettings() {
+function DataSettings({ colors }: { colors: ReturnType<typeof useThemeColors> }) {
   const { profile, records, checkups, exerciseLogs, weightLogs, currentStreak } = useHealthStore();
   const cardStyle = useCardStyle();
 
@@ -305,10 +316,8 @@ function DataSettings() {
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
-        // 验证是否是有效的JSON
         const parsed = JSON.parse(content);
 
-        // 验证数据结构
         if (!parsed.state) {
           throw new Error('无效的数据格式');
         }
@@ -324,8 +333,6 @@ function DataSettings() {
       }
     };
     reader.readAsText(file);
-
-    // 重置input
     event.target.value = '';
   };
 
@@ -339,20 +346,20 @@ function DataSettings() {
   return (
     <div>
       <div style={cardStyle}>
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', marginBottom: 20 }}>数据管理</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, marginBottom: 20 }}>数据管理</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* 导出数据 */}
-          <div style={{ padding: 20, border: '1px solid #e5e5ea', borderRadius: 14 }}>
+          <div style={{ padding: 20, border: `1px solid ${colors.border}`, borderRadius: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>导出数据</h3>
-                <p style={{ fontSize: 14, color: '#86868b', margin: '4px 0 0 0' }}>下载所有健康数据到本地</p>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: colors.text, margin: 0 }}>导出数据</h3>
+                <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>下载所有健康数据到本地</p>
               </div>
               <button
                 onClick={handleExport}
                 style={{
                   padding: '10px 20px',
-                  background: '#007aff',
+                  background: colors.primary,
                   color: 'white',
                   borderRadius: 10,
                   fontSize: 14,
@@ -367,18 +374,18 @@ function DataSettings() {
           </div>
 
           {/* 导出医生报告 */}
-          <div style={{ padding: 20, border: '1px solid #e5e5ea', borderRadius: 14 }}>
+          <div style={{ padding: 20, border: `1px solid ${colors.border}`, borderRadius: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>医生报告</h3>
-                <p style={{ fontSize: 14, color: '#86868b', margin: '4px 0 0 0' }}>生成PDF报告，方便就医时使用</p>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: colors.text, margin: 0 }}>医生报告</h3>
+                <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>生成PDF报告，方便就医时使用</p>
               </div>
               <button
                 onClick={handleExportPDF}
                 disabled={!profile}
                 style={{
                   padding: '10px 20px',
-                  background: profile ? '#34c759' : '#aeaeb2',
+                  background: profile ? colors.success : colors.textTertiary,
                   color: 'white',
                   borderRadius: 10,
                   fontSize: 14,
@@ -393,17 +400,17 @@ function DataSettings() {
           </div>
 
           {/* 导入数据 */}
-          <div style={{ padding: 20, border: '1px solid #e5e5ea', borderRadius: 14 }}>
+          <div style={{ padding: 20, border: `1px solid ${colors.border}`, borderRadius: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>导入数据</h3>
-                <p style={{ fontSize: 14, color: '#86868b', margin: '4px 0 0 0' }}>从备份文件恢复数据</p>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: colors.text, margin: 0 }}>导入数据</h3>
+                <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>从备份文件恢复数据</p>
               </div>
               <label
                 htmlFor="import-file"
                 style={{
                   padding: '10px 20px',
-                  background: '#34c759',
+                  background: colors.success,
                   color: 'white',
                   borderRadius: 10,
                   fontSize: 14,
@@ -429,14 +436,14 @@ function DataSettings() {
           <div style={{ padding: 20, border: '1px solid #ffccc7', borderRadius: 14, background: 'rgba(255,59,48,0.04)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#ff3b30', margin: 0 }}>清除数据</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: colors.danger, margin: 0 }}>清除数据</h3>
                 <p style={{ fontSize: 14, color: '#ff6b6b', margin: '4px 0 0 0' }}>删除所有本地存储的数据</p>
               </div>
               <button
                 onClick={handleClear}
                 style={{
                   padding: '10px 20px',
-                  background: '#ff3b30',
+                  background: colors.danger,
                   color: 'white',
                   borderRadius: 10,
                   fontSize: 14,
@@ -452,15 +459,15 @@ function DataSettings() {
             </div>
           </div>
         </div>
-        <div style={{ marginTop: 20, padding: 16, background: '#f2f2f7', borderRadius: 12 }}>
-          <p style={{ fontSize: 13, color: '#86868b', margin: 0 }}>数据存储在您的浏览器本地存储中，不会上传到任何服务器。</p>
+        <div style={{ marginTop: 20, padding: 16, background: colors.bgTertiary, borderRadius: 12 }}>
+          <p style={{ fontSize: 13, color: colors.textSecondary, margin: 0 }}>数据存储在您的浏览器本地存储中，不会上传到任何服务器。</p>
         </div>
       </div>
     </div>
   );
 }
 
-function AppearanceSettings() {
+function AppearanceSettings({ colors }: { colors: ReturnType<typeof useThemeColors> }) {
   const { theme, setTheme } = useHealthStore();
   const cardStyle = useCardStyle();
 
@@ -473,7 +480,7 @@ function AppearanceSettings() {
   return (
     <div>
       <div style={cardStyle}>
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', marginBottom: 20 }}>外观设置</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, marginBottom: 20 }}>外观设置</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {themeOptions.map((option) => (
             <button
@@ -484,7 +491,7 @@ function AppearanceSettings() {
                 alignItems: 'center',
                 padding: 16,
                 borderRadius: 14,
-                border: theme === option.value ? '2px solid #007aff' : '2px solid #e5e5ea',
+                border: theme === option.value ? `2px solid ${colors.primary}` : `2px solid ${colors.border}`,
                 background: theme === option.value ? 'rgba(0,122,255,0.08)' : 'transparent',
                 cursor: 'pointer',
                 textAlign: 'left',
@@ -495,21 +502,21 @@ function AppearanceSettings() {
                 width: 44,
                 height: 44,
                 borderRadius: 12,
-                background: theme === option.value ? '#007aff' : '#f2f2f7',
+                background: theme === option.value ? colors.primary : colors.bgTertiary,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginRight: 14,
-                color: theme === option.value ? 'white' : '#86868b',
+                color: theme === option.value ? 'white' : colors.textSecondary,
               }}>
                 {option.icon}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#1d1d1f' }}>{option.label}</div>
-                <div style={{ fontSize: 13, color: '#86868b', marginTop: 2 }}>{option.description}</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: colors.text }}>{option.label}</div>
+                <div style={{ fontSize: 13, color: colors.textSecondary, marginTop: 2 }}>{option.description}</div>
               </div>
               {theme === option.value && (
-                <Check size={20} color="#007aff" />
+                <Check size={20} color={colors.primary} />
               )}
             </button>
           ))}

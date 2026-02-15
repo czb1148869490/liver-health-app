@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, ClipboardCheck, BarChart3, Bell, Settings, Heart, Trophy, BookOpen, Menu, X } from 'lucide-react';
+import { useThemeColors } from '../../hooks/useResponsive';
 
 const navItems = [
   { path: '/', label: '首页', icon: LayoutDashboard },
@@ -14,6 +15,7 @@ const navItems = [
 
 export function Layout() {
   const location = useLocation();
+  const colors = useThemeColors();
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -36,18 +38,18 @@ export function Layout() {
   // Desktop Layout
   if (!isMobile) {
     return (
-      <div style={{ display: 'flex', minHeight: '100vh', background: '#f5f5f7' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', background: colors.bgSecondary }}>
         <aside style={{
           width: 240,
-          background: 'white',
-          borderRight: '1px solid #e5e5ea',
+          background: colors.cardBg,
+          borderRight: `1px solid ${colors.border}`,
           position: 'fixed',
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
           zIndex: 100
         }}>
-          <div style={{ height: 60, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: '1px solid #f0f0f0' }}>
+          <div style={{ height: 60, display: 'flex', alignItems: 'center', padding: '0 20px', borderBottom: `1px solid ${colors.border}` }}>
             <div style={{
               width: 36,
               height: 36,
@@ -60,7 +62,7 @@ export function Layout() {
             }}>
               <Heart size={18} color="white" />
             </div>
-            <span style={{ fontSize: 17, fontWeight: 600, color: '#1d1d1f' }}>健康</span>
+            <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>健康</span>
           </div>
 
           <nav style={{ flex: 1, padding: '12px 10px' }}>
@@ -78,7 +80,7 @@ export function Layout() {
                     borderRadius: 10,
                     fontSize: 15,
                     fontWeight: 400,
-                    color: isActive ? '#007aff' : '#86868b',
+                    color: isActive ? colors.primary : colors.textSecondary,
                     background: isActive ? 'rgba(0,122,255,0.1)' : 'transparent',
                     textDecoration: 'none',
                     marginBottom: 2,
@@ -91,12 +93,13 @@ export function Layout() {
             })}
           </nav>
 
-          <div style={{ padding: 16, borderTop: '1px solid #f0f0f0' }}>
-            <p style={{ fontSize: 12, color: '#aeaeb2', textAlign: 'center' }}>坚持 · 改变</p>
+          <div style={{ padding: 16, borderTop: `1px solid ${colors.border}` }}>
+            <p style={{ fontSize: 12, color: colors.textTertiary, textAlign: 'center' }}>坚持 · 改变</p>
           </div>
         </aside>
 
-        <main style={{ flex: 1, marginLeft: 240, padding: 32 }}>
+        <main style={{ flex: 1, marginLeft: 240, padding: 32, background: colors.bg }}>
+          {/* eslint-disable-next-line */}
           <Outlet />
         </main>
       </div>
@@ -109,7 +112,7 @@ export function Layout() {
       display: 'flex',
       flexDirection: 'column',
       minHeight: '100vh',
-      background: '#f5f5f7',
+      background: colors.bgSecondary,
       paddingBottom: 'env(safe-area-inset-bottom)'
     }}>
       {/* Mobile Header */}
@@ -117,8 +120,8 @@ export function Layout() {
         position: 'sticky',
         top: 0,
         zIndex: 99,
-        background: 'white',
-        borderBottom: '1px solid #e5e5ea',
+        background: colors.cardBg,
+        borderBottom: `1px solid ${colors.border}`,
         paddingTop: 'env(safe-area-inset-top)',
         paddingLeft: 16,
         paddingRight: 16,
@@ -140,7 +143,7 @@ export function Layout() {
           }}>
             <Heart size={18} color="white" />
           </div>
-          <span style={{ fontSize: 17, fontWeight: 600, color: '#1d1d1f' }}>健康</span>
+          <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>健康</span>
         </div>
         <button
           onClick={() => setSidebarOpen(true)}
@@ -151,7 +154,7 @@ export function Layout() {
             cursor: 'pointer'
           }}
         >
-          <Menu size={24} color="#1d1d1f" />
+          <Menu size={24} color={colors.text} />
         </button>
       </header>
 
@@ -160,8 +163,10 @@ export function Layout() {
         flex: 1,
         padding: 16,
         paddingBottom: 'calc(60px + env(safe-area-inset-bottom))',
-        overflow: 'auto'
+        overflow: 'auto',
+        background: colors.bg
       }}>
+        {/* eslint-disable-next-line */}
         <Outlet />
       </main>
 
@@ -171,8 +176,8 @@ export function Layout() {
         bottom: 0,
         left: 0,
         right: 0,
-        background: 'white',
-        borderTop: '1px solid #e5e5ea',
+        background: colors.cardBg,
+        borderTop: `1px solid ${colors.border}`,
         display: 'flex',
         justifyContent: 'space-around',
         paddingBottom: 'env(safe-area-inset-bottom)',
@@ -199,12 +204,12 @@ export function Layout() {
             >
               <Icon
                 size={22}
-                color={isActive ? '#007aff' : '#8e8e93'}
+                color={isActive ? colors.primary : colors.textSecondary}
                 style={{ marginBottom: 2 }}
               />
               <span style={{
                 fontSize: 10,
-                color: isActive ? '#007aff' : '#8e8e93',
+                color: isActive ? colors.primary : colors.textSecondary,
                 fontWeight: isActive ? 500 : 400
               }}>
                 {item.label}
@@ -235,7 +240,7 @@ export function Layout() {
               right: 0,
               bottom: 0,
               width: 280,
-              background: 'white',
+              background: colors.cardBg,
               paddingTop: 'env(safe-area-inset-top)',
               animation: 'slideIn 0.3s ease'
             }}
@@ -246,14 +251,14 @@ export function Layout() {
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: '16px 20px',
-              borderBottom: '1px solid #e5e5ea'
+              borderBottom: `1px solid ${colors.border}`
             }}>
-              <span style={{ fontSize: 17, fontWeight: 600, color: '#1d1d1f' }}>菜单</span>
+              <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>菜单</span>
               <button
                 onClick={() => setSidebarOpen(false)}
                 style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer' }}
               >
-                <X size={24} color="#8e8e93" />
+                <X size={24} color={colors.textSecondary} />
               </button>
             </div>
 
@@ -272,7 +277,7 @@ export function Layout() {
                       borderRadius: 10,
                       fontSize: 16,
                       fontWeight: 400,
-                      color: isActive ? '#007aff' : '#1d1d1f',
+                      color: isActive ? colors.primary : colors.text,
                       background: isActive ? 'rgba(0,122,255,0.1)' : 'transparent',
                       textDecoration: 'none',
                       marginBottom: 4,
@@ -290,3 +295,6 @@ export function Layout() {
     </div>
   );
 }
+
+// Need to import Outlet
+import { Outlet } from 'react-router-dom';

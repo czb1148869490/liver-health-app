@@ -3,7 +3,7 @@ import { useHealthStore } from '../stores/healthStore';
 import type { ExerciseType, Mood } from '../types/health';
 import { Activity, UtensilsCrossed, Scale, Smile, Save, Check } from 'lucide-react';
 import { calculateCalories } from '../utils/calories';
-import { useResponsive, useCardStyle } from '../hooks/useResponsive';
+import { useResponsive, useCardStyle, useThemeColors } from '../hooks/useResponsive';
 
 const exerciseTypes: { type: ExerciseType; label: string; icon: string }[] = [
   { type: 'walking', label: '快走', icon: '🚶' },
@@ -22,6 +22,7 @@ export function CheckIn() {
   const { profile, todayRecord, setTodayRecord, saveRecord, addExerciseLog, addWeightLog, updateProfile } = store;
   const { isMobile } = useResponsive();
   const cardStyle = useCardStyle();
+  const colors = useThemeColors();
   const [exerciseType, setExerciseType] = useState<ExerciseType>('walking');
   const [exerciseDuration, setExerciseDuration] = useState(30);
   const [weight, setWeight] = useState('');
@@ -86,14 +87,14 @@ export function CheckIn() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: '#86868b' }}>请先在首页完成个人资料设置</div>;
+  if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: colors.textSecondary }}>请先在首页完成个人资料设置</div>;
 
   return (
     <div style={{ maxWidth: isMobile ? '100%' : 700, margin: '0 auto' }}>
-      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', marginBottom: isMobile ? 16 : 24 }}>每日打卡</h1>
+      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: colors.text, marginBottom: isMobile ? 16 : 24 }}>每日打卡</h1>
 
       {saved && (
-        <div style={{ position: 'fixed', top: 20, right: 20, background: '#1d1d1f', color: 'white', padding: '12px 20px', borderRadius: 14, display: 'flex', alignItems: 'center', zIndex: 100, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+        <div style={{ position: 'fixed', top: 20, right: 20, background: colors.text, color: colors.bg, padding: '12px 20px', borderRadius: 14, display: 'flex', alignItems: 'center', zIndex: 100, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
           <Check size={18} style={{ marginRight: 8 }} /> 已保存
         </div>
       )}
@@ -103,39 +104,39 @@ export function CheckIn() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ width: 48, height: 48, background: 'rgba(0,122,255,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
-              <Activity size={24} color="#007aff" />
+              <Activity size={24} color={colors.primary} />
             </div>
             <div>
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>运动</h2>
-              <p style={{ fontSize: 14, color: '#86868b', margin: '4px 0 0 0' }}>目标: {profile.targetExerciseMinutes} 分钟</p>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, margin: 0 }}>运动</h2>
+              <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>目标: {profile.targetExerciseMinutes} 分钟</p>
             </div>
           </div>
           {todayRecord?.exerciseCompleted ? (
-            <span style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, background: 'rgba(52,199,89,0.15)', color: '#34c759' }}>已完成 {todayRecord.exerciseDuration} 分钟</span>
+            <span style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, background: colors.badgeGreenBg, color: colors.badgeGreenText }}>已完成 {todayRecord.exerciseDuration} 分钟</span>
           ) : (
-            <span style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, background: 'rgba(255,149,0,0.15)', color: '#ff9500' }}>待完成</span>
+            <span style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, background: colors.badgeOrangeBg, color: colors.badgeOrangeText }}>待完成</span>
           )}
         </div>
 
         {!todayRecord?.exerciseCompleted ? (
           <div>
-            <p style={{ fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 12 }}>运动类型</p>
+            <p style={{ fontSize: 15, fontWeight: 500, color: colors.text, marginBottom: 12 }}>运动类型</p>
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)', gap: 8, marginBottom: 20 }}>
               {exerciseTypes.map(e => (
-                <button key={e.type} onClick={() => setExerciseType(e.type)} style={{ padding: 12, borderRadius: 14, border: exerciseType === e.type ? '2px solid #007aff' : '2px solid #e5e5ea', background: exerciseType === e.type ? 'rgba(0,122,255,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
+                <button key={e.type} onClick={() => setExerciseType(e.type)} style={{ padding: 12, borderRadius: 14, border: exerciseType === e.type ? `2px solid ${colors.primary}` : `2px solid ${colors.border}`, background: exerciseType === e.type ? 'rgba(0,122,255,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
                   <div style={{ fontSize: 24 }}>{e.icon}</div>
-                  <div style={{ fontSize: 12, color: '#86868b', marginTop: 4 }}>{e.label}</div>
+                  <div style={{ fontSize: 12, color: colors.textSecondary, marginTop: 4 }}>{e.label}</div>
                 </button>
               ))}
             </div>
-            <p style={{ fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 12 }}>时长</p>
+            <p style={{ fontSize: 15, fontWeight: 500, color: colors.text, marginBottom: 12 }}>时长</p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
               {durations.map(d => (
-                <button key={d} onClick={() => setExerciseDuration(d)} style={{ padding: '10px 20px', borderRadius: 12, border: exerciseDuration === d ? '2px solid #007aff' : '2px solid #e5e5ea', background: exerciseDuration === d ? 'rgba(0,122,255,0.08)' : 'transparent', color: exerciseDuration === d ? '#007aff' : '#86868b', fontWeight: 500, cursor: 'pointer' }}>{d} 分钟</button>
+                <button key={d} onClick={() => setExerciseDuration(d)} style={{ padding: '10px 20px', borderRadius: 12, border: exerciseDuration === d ? `2px solid ${colors.primary}` : `2px solid ${colors.border}`, background: exerciseDuration === d ? 'rgba(0,122,255,0.08)' : 'transparent', color: exerciseDuration === d ? colors.primary : colors.textSecondary, fontWeight: 500, cursor: 'pointer' }}>{d} 分钟</button>
               ))}
             </div>
             {calorieInfo && (
-              <p style={{ fontSize: 13, color: '#34c759', marginBottom: 16, display: 'flex', alignItems: 'center' }}>
+              <p style={{ fontSize: 13, color: colors.success, marginBottom: 16, display: 'flex', alignItems: 'center' }}>
                 🔥 预计消耗约 <span style={{ fontWeight: 600, marginLeft: 4 }}>{calorieInfo.calories}</span> 千卡
               </p>
             )}
@@ -145,8 +146,8 @@ export function CheckIn() {
           </div>
         ) : (
           <div style={{ background: 'rgba(52,199,89,0.1)', padding: 16, borderRadius: 14, display: 'flex', alignItems: 'center' }}>
-            <Check size={20} color="#34c759" style={{ marginRight: 10 }} />
-            <span style={{ fontWeight: 500, color: '#34c759' }}>今日已完成 {todayRecord.exerciseDuration} 分钟 {exerciseTypes.find(e => e.type === todayRecord.exerciseType)?.label}</span>
+            <Check size={20} color={colors.success} style={{ marginRight: 10 }} />
+            <span style={{ fontWeight: 500, color: colors.success }}>今日已完成 {todayRecord.exerciseDuration} 分钟 {exerciseTypes.find(e => e.type === todayRecord.exerciseType)?.label}</span>
           </div>
         )}
       </div>
@@ -155,21 +156,21 @@ export function CheckIn() {
       <div style={{ ...cardStyle, marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
           <div style={{ width: 48, height: 48, background: 'rgba(255,149,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
-            <UtensilsCrossed size={24} color="#ff9500" />
+            <UtensilsCrossed size={24} color={colors.warning} />
           </div>
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>饮食</h2>
-            <p style={{ fontSize: 14, color: '#86868b', margin: '4px 0 0 0' }}>记录三餐情况</p>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, margin: 0 }}>饮食</h2>
+            <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>记录三餐情况</p>
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           {(['breakfast', 'lunch', 'dinner'] as const).map(meal => {
             const completed = todayRecord?.[`${meal}Completed` as keyof typeof todayRecord];
             return (
-              <button key={meal} onClick={() => handleMeal(meal)} style={{ padding: 16, borderRadius: 14, border: completed ? '2px solid #ff9500' : '2px solid #e5e5ea', background: completed ? 'rgba(255,149,0,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
+              <button key={meal} onClick={() => handleMeal(meal)} style={{ padding: 16, borderRadius: 14, border: completed ? `2px solid ${colors.warning}` : `2px solid ${colors.border}`, background: completed ? 'rgba(255,149,0,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
                 <div style={{ fontSize: 28 }}>{meal === 'breakfast' ? '🌅' : meal === 'lunch' ? '☀️' : '🌙'}</div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: '#1d1d1f', marginTop: 8 }}>{meal === 'breakfast' ? '早餐' : meal === 'lunch' ? '午餐' : '晚餐'}</div>
-                <div style={{ fontSize: 13, color: completed ? '#ff9500' : '#aeaeb2', marginTop: 4 }}>{completed ? '✓ 已吃' : '未记录'}</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: colors.text, marginTop: 8 }}>{meal === 'breakfast' ? '早餐' : meal === 'lunch' ? '午餐' : '晚餐'}</div>
+                <div style={{ fontSize: 13, color: completed ? colors.warning : colors.textTertiary, marginTop: 4 }}>{completed ? '✓ 已吃' : '未记录'}</div>
               </button>
             );
           })}
@@ -177,7 +178,7 @@ export function CheckIn() {
 
         {/* 饮食建议 */}
         <div style={{ marginTop: 16, padding: 14, background: 'rgba(255,149,0,0.08)', borderRadius: 12 }}>
-          <p style={{ fontSize: 13, color: '#ff9500', margin: 0, display: 'flex', alignItems: 'center' }}>
+          <p style={{ fontSize: 13, color: colors.warning, margin: 0, display: 'flex', alignItems: 'center' }}>
             <span style={{ marginRight: 6 }}>💡</span>
             建议采用地中海饮食：多蔬菜、水果、全谷物，少油炸、高糖食品
           </p>
@@ -188,11 +189,11 @@ export function CheckIn() {
       <div style={{ ...cardStyle, marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
           <div style={{ width: 48, height: 48, background: 'rgba(175,82,222,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
-            <Scale size={24} color="#af52de" />
+            <Scale size={24} color={colors.purple} />
           </div>
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>体重</h2>
-            <p style={{ fontSize: 14, color: '#86868b', margin: '4px 0 0 0' }}>当前: {profile.currentWeight?.toFixed(1)} kg · 目标: {profile.targetWeight} kg</p>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, margin: 0 }}>体重</h2>
+            <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>当前: {profile.currentWeight?.toFixed(1)} kg · 目标: {profile.targetWeight} kg</p>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
@@ -200,7 +201,7 @@ export function CheckIn() {
           <button onClick={handleWeight} className="btn btn-primary"><Save size={18} style={{ marginRight: 6 }} />保存</button>
         </div>
         {profile.initialWeight && profile.currentWeight && (
-          <p style={{ fontSize: 13, color: '#86868b', marginTop: 10 }}>初始: {profile.initialWeight} kg · 已减 <span style={{ color: '#34c759', fontWeight: 600 }}>{(((profile.initialWeight - profile.currentWeight) / profile.initialWeight) * 100).toFixed(1)}%</span></p>
+          <p style={{ fontSize: 13, color: colors.textSecondary, marginTop: 10 }}>初始: {profile.initialWeight} kg · 已减 <span style={{ color: colors.success, fontWeight: 600 }}>{(((profile.initialWeight - profile.currentWeight) / profile.initialWeight) * 100).toFixed(1)}%</span></p>
         )}
       </div>
 
@@ -208,23 +209,23 @@ export function CheckIn() {
       <div style={{ ...cardStyle, marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
           <div style={{ width: 48, height: 48, background: 'rgba(255,204,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 14 }}>
-            <Smile size={24} color="#ffcc00" />
+            <Smile size={24} color={colors.yellow} />
           </div>
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: 0 }}>心情</h2>
-            <p style={{ fontSize: 14, color: '#86868b', margin: '4px 0 0 0' }}>记录今日状态</p>
+            <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, margin: 0 }}>心情</h2>
+            <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>记录今日状态</p>
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {moods.map((emoji, i) => (
-            <button key={i} onClick={() => handleMood((i + 1) as Mood)} style={{ width: 48, height: 48, borderRadius: 24, background: todayRecord?.mood === i + 1 ? '#007aff' : '#f2f2f7', border: 'none', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{emoji}</button>
+            <button key={i} onClick={() => handleMood((i + 1) as Mood)} style={{ width: 48, height: 48, borderRadius: 24, background: todayRecord?.mood === i + 1 ? colors.primary : colors.bgTertiary, border: 'none', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{emoji}</button>
           ))}
         </div>
       </div>
 
       {/* 备注 */}
       <div style={cardStyle}>
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', marginBottom: 16 }}>备注</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, marginBottom: 16 }}>备注</h2>
         <textarea value={notes} onChange={e => setNotes(e.target.value)} onBlur={handleNotes} className="input" rows={3} placeholder="记录饮食、运动感受..." style={{ resize: 'none' }} />
       </div>
     </div>
