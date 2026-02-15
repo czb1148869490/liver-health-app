@@ -3,11 +3,12 @@ import { useHealthStore } from '../stores/healthStore';
 import type { Reminder } from '../types/health';
 import { Bell, Plus, Trash2, Clock, Calendar, Activity, ChevronRight, AlertCircle, X } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
-
-const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
+import { useResponsive, useCardStyle } from '../hooks/useResponsive';
 
 export function Reminders() {
   const { reminders, addReminder, deleteReminder, toggleReminder, checkups, addCheckup } = useHealthStore();
+  const { isMobile } = useResponsive();
+  const cardStyle = useCardStyle();
   const [isAdding, setIsAdding] = useState(false);
   const [newReminder, setNewReminder] = useState({ type: 'custom' as Reminder['type'], title: '', description: '', time: '09:00', repeatPattern: 'daily' as Reminder['repeatPattern'] });
   const [isAddingCheckup, setIsAddingCheckup] = useState(false);
@@ -38,9 +39,9 @@ export function Reminders() {
   const getRepeatLabel = (pattern: Reminder['repeatPattern']) => ({ daily: '每天', weekly: '每周', monthly: '每月' }[pattern]);
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 34, fontWeight: 700, color: '#1d1d1f', margin: 0 }}>提醒管理</h1>
+    <div style={{ maxWidth: isMobile ? '100%' : 700, margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isMobile ? 16 : 24, flexWrap: 'wrap', gap: 12 }}>
+        <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', margin: 0 }}>提醒管理</h1>
         <button onClick={() => setIsAdding(true)} style={{ display: 'flex', alignItems: 'center', padding: '10px 18px', background: '#007aff', color: 'white', borderRadius: 12, fontSize: 15, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
           <Plus size={18} style={{ marginRight: 6 }} /> 添加提醒
         </button>

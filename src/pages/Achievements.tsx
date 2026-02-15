@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 import { useHealthStore } from '../stores/healthStore';
 import { Trophy, Lock, Star, Flame, Target, Activity, Scale, UtensilsCrossed } from 'lucide-react';
 import * as Progress from '@radix-ui/react-progress';
-
-const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
+import { useResponsive, useCardStyle } from '../hooks/useResponsive';
 
 export function Achievements() {
   const store = useHealthStore();
   const { achievements, points, milestones } = store;
+  const { isMobile } = useResponsive();
+  const cardStyle = useCardStyle();
 
   useEffect(() => {
     store.calculateStreak();
@@ -40,8 +41,8 @@ export function Achievements() {
   const otherAchievements = achievements.filter((a) => !['streak_7', 'streak_15', 'streak_30', 'exercise_first', 'exercise_10', 'exercise_500', 'weight_loss_5', 'weight_loss_10'].includes(a.id));
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 34, fontWeight: 700, color: '#1d1d1f', marginBottom: 24 }}>成就徽章</h1>
+    <div style={{ maxWidth: isMobile ? '100%' : 800, margin: '0 auto' }}>
+      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', marginBottom: isMobile ? 16 : 24 }}>成就徽章</h1>
 
       {/* Stats Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 28 }}>

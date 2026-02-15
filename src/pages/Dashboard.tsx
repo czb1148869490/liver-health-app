@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { useHealthStore } from '../stores/healthStore';
 import { Activity, UtensilsCrossed, Scale, Smile, ArrowRight, Flame, TrendingDown, Target, Trophy, Heart } from 'lucide-react';
 import { getTodayTip } from '../data/dailyTips';
+import { useResponsive, useCardStyle, useGridStyle } from '../hooks/useResponsive';
 
 export function Dashboard() {
   const store = useHealthStore();
   const { profile, todayRecord, currentStreak, points } = store;
   const [progress, setProgress] = useState({ exercise: 0, meals: 0, total: 0, percentage: 0 });
   const [weeklyExercise, setWeeklyExercise] = useState(0);
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
     store.calculateStreak();
@@ -22,21 +24,16 @@ export function Dashboard() {
     return <Onboarding />;
   }
 
-  const cardStyle: React.CSSProperties = {
-    background: 'white',
-    borderRadius: 18,
-    boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-    padding: 20,
-  };
+  const cardStyle = useCardStyle();
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto' }}>
+    <div style={{ maxWidth: isMobile ? '100%' : 900, margin: '0 auto' }}>
       {/* Header */}
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: 34, fontWeight: 700, color: '#1d1d1f', margin: 0 }}>
+      <div style={{ marginBottom: isMobile ? 20 : 32 }}>
+        <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', margin: 0 }}>
           你好，{profile?.name || '朋友'}
         </h1>
-        <p style={{ fontSize: 17, color: '#86868b', marginTop: 4 }}>
+        <p style={{ fontSize: isMobile ? 14 : 17, color: '#86868b', marginTop: 4 }}>
           今天是 #{new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
         </p>
       </div>
@@ -45,16 +42,16 @@ export function Dashboard() {
       {(() => {
         const tip = getTodayTip();
         return (
-          <Link to="/education" style={{ textDecoration: 'none', display: 'block', marginBottom: 24 }}>
+          <Link to="/education" style={{ textDecoration: 'none', display: 'block', marginBottom: isMobile ? 16 : 24 }}>
             <div style={{ ...cardStyle, background: 'linear-gradient(135deg, #5856d6, #007aff)', color: 'white', cursor: 'pointer' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 28, marginRight: 14 }}>{tip.icon}</span>
+                <span style={{ fontSize: isMobile ? 24 : 28, marginRight: isMobile ? 10 : 14 }}>{tip.icon}</span>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontSize: 12, opacity: 0.9, margin: '0 0 4px 0' }}>今日健康小贴士</p>
-                  <p style={{ fontSize: 15, fontWeight: 600, margin: 0, lineHeight: 1.4 }}>{tip.title}</p>
-                  <p style={{ fontSize: 13, opacity: 0.8, margin: '8px 0 0 0', lineHeight: 1.4 }}>{tip.content.slice(0, 60)}...</p>
+                  <p style={{ fontSize: isMobile ? 14 : 15, fontWeight: 600, margin: 0, lineHeight: 1.4 }}>{tip.title}</p>
+                  <p style={{ fontSize: isMobile ? 12 : 13, opacity: 0.8, margin: '8px 0 0 0', lineHeight: 1.4 }}>{tip.content.slice(0, isMobile ? 40 : 60)}...</p>
                 </div>
-                <ArrowRight size={20} style={{ opacity: 0.7 }} />
+                <ArrowRight size={isMobile ? 18 : 20} style={{ opacity: 0.7 }} />
               </div>
             </div>
           </Link>
@@ -62,10 +59,10 @@ export function Dashboard() {
       })()}
 
       {/* Progress */}
-      <div style={{ ...cardStyle, marginBottom: 24 }}>
+      <div style={{ ...cardStyle, marginBottom: isMobile ? 16 : 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <span style={{ fontSize: 17, fontWeight: 600, color: '#1d1d1f' }}>今日进度</span>
-          <span style={{ fontSize: 34, fontWeight: 700, color: '#34c759' }}>{progress.percentage}%</span>
+          <span style={{ fontSize: isMobile ? 15 : 17, fontWeight: 600, color: '#1d1d1f' }}>今日进度</span>
+          <span style={{ fontSize: isMobile ? 28 : 34, fontWeight: 700, color: '#34c759' }}>{progress.percentage}%</span>
         </div>
         <div className="progress">
           <div className="progress-bar" style={{ width: `${progress.percentage}%` }} />
@@ -74,36 +71,36 @@ export function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 24 }}>
+      <div style={{ ...useGridStyle(3), marginBottom: isMobile ? 16 : 24 }}>
         <div style={{ ...cardStyle, background: 'linear-gradient(135deg, #007aff, #5856d6)', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Flame size={28} />
-            <span style={{ fontSize: 40, fontWeight: 700 }}>{currentStreak}</span>
+            <Flame size={isMobile ? 22 : 28} />
+            <span style={{ fontSize: isMobile ? 28 : 40, fontWeight: 700 }}>{currentStreak}</span>
           </div>
-          <p style={{ fontSize: 15, fontWeight: 500, marginTop: 8 }}>连续打卡天数</p>
+          <p style={{ fontSize: isMobile ? 12 : 15, fontWeight: 500, marginTop: 8 }}>连续打卡天数</p>
         </div>
         <div style={{ ...cardStyle, background: 'linear-gradient(135deg, #34c759, #30d158)', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Target size={28} />
-            <span style={{ fontSize: 40, fontWeight: 700 }}>{weeklyExercise}</span>
+            <Target size={isMobile ? 22 : 28} />
+            <span style={{ fontSize: isMobile ? 28 : 40, fontWeight: 700 }}>{weeklyExercise}</span>
           </div>
-          <p style={{ fontSize: 15, fontWeight: 500, marginTop: 8 }}>本周运动(分钟)</p>
+          <p style={{ fontSize: isMobile ? 12 : 15, fontWeight: 500, marginTop: 8 }}>本周运动(分钟)</p>
         </div>
         <div style={{ ...cardStyle, background: 'linear-gradient(135deg, #ff9500, #ff3b30)', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Trophy size={28} />
-            <span style={{ fontSize: 40, fontWeight: 700 }}>{points}</span>
+            <Trophy size={isMobile ? 22 : 28} />
+            <span style={{ fontSize: isMobile ? 28 : 40, fontWeight: 700 }}>{points}</span>
           </div>
-          <p style={{ fontSize: 15, fontWeight: 500, marginTop: 8 }}>积分</p>
+          <p style={{ fontSize: isMobile ? 12 : 15, fontWeight: 500, marginTop: 8 }}>积分</p>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+      <div style={{ ...useGridStyle(2, 12) }}>
         <Link to="/checkin" style={{ ...cardStyle, textDecoration: 'none', display: 'block', cursor: 'pointer' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-            <div style={{ width: 48, height: 48, background: 'rgba(0,122,255,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Activity size={24} color="#007aff" />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
+            <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(0,122,255,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Activity size={isMobile ? 20 : 24} color="#007aff" />
             </div>
             {todayRecord?.exerciseCompleted ? (
               <span className="badge badge-green">已完成</span>
@@ -111,40 +108,40 @@ export function Dashboard() {
               <span className="badge badge-orange">待完成</span>
             )}
           </div>
-          <h3 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>运动打卡</h3>
-          <p style={{ fontSize: 15, color: '#86868b', margin: 0 }}>目标: {profile.targetExerciseMinutes} 分钟</p>
-          <div style={{ display: 'flex', alignItems: 'center', color: '#007aff', fontSize: 15, fontWeight: 500, marginTop: 16 }}>
+          <h3 style={{ fontSize: isMobile ? 17 : 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>运动打卡</h3>
+          <p style={{ fontSize: isMobile ? 13 : 15, color: '#86868b', margin: 0 }}>目标: {profile.targetExerciseMinutes} 分钟</p>
+          <div style={{ display: 'flex', alignItems: 'center', color: '#007aff', fontSize: isMobile ? 13 : 15, fontWeight: 500, marginTop: isMobile ? 12 : 16 }}>
             立即打卡 <ArrowRight size={16} style={{ marginLeft: 4 }} />
           </div>
         </Link>
 
         <Link to="/checkin" style={{ ...cardStyle, textDecoration: 'none', display: 'block', cursor: 'pointer' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-            <div style={{ width: 48, height: 48, background: 'rgba(255,149,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <UtensilsCrossed size={24} color="#ff9500" />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
+            <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(255,149,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <UtensilsCrossed size={isMobile ? 20 : 24} color="#ff9500" />
             </div>
-            <span style={{ fontSize: 15, color: '#86868b' }}>
+            <span style={{ fontSize: isMobile ? 13 : 15, color: '#86868b' }}>
               {((todayRecord?.breakfastCompleted ? 1 : 0) + (todayRecord?.lunchCompleted ? 1 : 0) + (todayRecord?.dinnerCompleted ? 1 : 0))}/3 餐
             </span>
           </div>
-          <h3 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>饮食记录</h3>
-          <p style={{ fontSize: 15, color: '#86868b', margin: 0 }}>
+          <h3 style={{ fontSize: isMobile ? 17 : 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>饮食记录</h3>
+          <p style={{ fontSize: isMobile ? 13 : 15, color: '#86868b', margin: 0 }}>
             早 {todayRecord?.breakfastCompleted ? '✓' : '○'} · 午 {todayRecord?.lunchCompleted ? '✓' : '○'} · 晚 {todayRecord?.dinnerCompleted ? '✓' : '○'}
           </p>
-          <div style={{ display: 'flex', alignItems: 'center', color: '#ff9500', fontSize: 15, fontWeight: 500, marginTop: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', color: '#ff9500', fontSize: isMobile ? 13 : 15, fontWeight: 500, marginTop: isMobile ? 12 : 16 }}>
             记录饮食 <ArrowRight size={16} style={{ marginLeft: 4 }} />
           </div>
         </Link>
 
         <div style={{ ...cardStyle }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-            <div style={{ width: 48, height: 48, background: 'rgba(175,82,222,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Scale size={24} color="#af52de" />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
+            <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(175,82,222,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Scale size={isMobile ? 20 : 24} color="#af52de" />
             </div>
           </div>
-          <h3 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>体重</h3>
-          <p style={{ fontSize: 28, fontWeight: 700, color: '#1d1d1f', margin: 0 }}>
-            {profile.currentWeight?.toFixed(1) || '--'} <span style={{ fontSize: 15, fontWeight: 400, color: '#86868b' }}>kg</span>
+          <h3 style={{ fontSize: isMobile ? 17 : 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>体重</h3>
+          <p style={{ fontSize: isMobile ? 24 : 28, fontWeight: 700, color: '#1d1d1f', margin: 0 }}>
+            {profile.currentWeight?.toFixed(1) || '--'} <span style={{ fontSize: isMobile ? 13 : 15, fontWeight: 400, color: '#86868b' }}>kg</span>
           </p>
           {profile.initialWeight && (
             <p style={{ fontSize: 13, color: '#34c759', marginTop: 8, display: 'flex', alignItems: 'center' }}>
@@ -155,13 +152,13 @@ export function Dashboard() {
         </div>
 
         <div style={{ ...cardStyle }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-            <div style={{ width: 48, height: 48, background: 'rgba(255,204,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Smile size={24} color="#ffcc00" />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: isMobile ? 12 : 16 }}>
+            <div style={{ width: isMobile ? 40 : 48, height: isMobile ? 40 : 48, background: 'rgba(255,204,0,0.1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Smile size={isMobile ? 20 : 24} color="#ffcc00" />
             </div>
           </div>
-          <h3 style={{ fontSize: 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>心情</h3>
-          <p style={{ fontSize: 15, color: '#86868b', marginBottom: 12 }}>
+          <h3 style={{ fontSize: isMobile ? 17 : 20, fontWeight: 600, color: '#1d1d1f', margin: '0 0 4px 0' }}>心情</h3>
+          <p style={{ fontSize: isMobile ? 13 : 15, color: '#86868b', marginBottom: isMobile ? 10 : 12 }}>
             {todayRecord?.mood ? ['很差', '较差', '一般', '良好', '很好'][todayRecord.mood - 1] : '未记录'}
           </p>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -169,13 +166,13 @@ export function Dashboard() {
               <div
                 key={i}
                 style={{
-                  width: 32,
-                  height: 32,
+                  width: isMobile ? 28 : 32,
+                  height: isMobile ? 28 : 32,
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 18,
+                  fontSize: isMobile ? 16 : 18,
                   background: todayRecord?.mood === i + 1 ? '#007aff' : '#f2f2f7',
                   opacity: todayRecord?.mood === i + 1 ? 1 : 0.5,
                 }}
@@ -192,6 +189,7 @@ export function Dashboard() {
 
 function Onboarding() {
   const { setProfile, completeOnboarding, profile: existingProfile } = useHealthStore();
+  const { isMobile } = useResponsive();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -212,33 +210,43 @@ function Onboarding() {
     completeOnboarding();
   };
 
-  const cardStyle: React.CSSProperties = {
+  const cardStyle = {
     background: 'white',
     borderRadius: 20,
     boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
-    padding: 40,
+    padding: isMobile ? 24 : 40,
     maxWidth: 400,
-    margin: '80px auto',
+    margin: isMobile ? '40px auto' : '80px auto',
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '80px auto' }}>
+    <div style={{ maxWidth: 400, margin: isMobile ? '40px auto' : '80px auto', padding: isMobile ? 16 : 0 }}>
       <div style={cardStyle}>
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ width: 80, height: 80, background: 'linear-gradient(135deg, #ff6b6b, #ffa500)', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 8px 24px rgba(255,107,107,0.3)' }}>
-            <Heart size={40} color="white" />
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? 24 : 32 }}>
+          <div style={{
+            width: isMobile ? 60 : 80,
+            height: isMobile ? 60 : 80,
+            background: 'linear-gradient(135deg, #ff6b6b, #ffa500)',
+            borderRadius: isMobile ? 18 : 24,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 20px',
+            boxShadow: '0 8px 24px rgba(255,107,107,0.3)'
+          }}>
+            <Heart size={isMobile ? 30 : 40} color="white" />
           </div>
-          <h1 style={{ fontSize: 28, fontWeight: 700, color: '#1d1d1f', margin: '0 0 8px 0' }}>欢迎开始健康之旅</h1>
-          <p style={{ fontSize: 17, color: '#86868b', margin: 0 }}>让我们了解一下你的基本情况</p>
+          <h1 style={{ fontSize: isMobile ? 22 : 28, fontWeight: 700, color: '#1d1d1f', margin: '0 0 8px 0' }}>欢迎开始健康之旅</h1>
+          <p style={{ fontSize: isMobile ? 14 : 17, color: '#86868b', margin: 0 }}>让我们了解一下你的基本情况</p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16 }}>
           <div>
             <label style={{ display: 'block', fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>你的名字</label>
             <input type="text" name="name" required defaultValue={existingProfile?.name} className="input" placeholder="请输入你的名字" />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: isMobile ? 10 : 16 }}>
             <div>
               <label style={{ display: 'block', fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 8 }}>身高 (cm)</label>
               <input type="number" name="height" required defaultValue={existingProfile?.height} className="input" placeholder="170" />
@@ -279,7 +287,7 @@ function Onboarding() {
           </button>
         </form>
 
-        <div style={{ marginTop: 24, padding: 16, background: 'rgba(0,122,255,0.08)', borderRadius: 12 }}>
+        <div style={{ marginTop: isMobile ? 16 : 24, padding: isMobile ? 12 : 16, background: 'rgba(0,122,255,0.08)', borderRadius: 12 }}>
           <p style={{ fontSize: 14, fontWeight: 600, color: '#007aff', margin: '0 0 8px 0' }}>💡 小贴士</p>
           <ul style={{ fontSize: 14, color: '#007aff', margin: 0, paddingLeft: 16, lineHeight: 1.6 }}>
             <li>减重 5-10% 可显著改善脂肪肝</li>

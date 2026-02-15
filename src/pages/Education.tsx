@@ -6,13 +6,14 @@ import { getTodayTip, getCategoryName as getTipCategoryName } from '../data/dail
 import { generateExercisePrescription, calculateBMI, getBMICategory } from '../utils/exercisePrescription';
 import { weeklyMealPlan, foodRecommendations, getTodayDietTip } from '../data/dietaryGuide';
 import { healthIndicators, getCategoryName as getIndicatorCategoryName, getCategoryIcon } from '../data/healthIndicators';
-
-const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
+import { useResponsive, useCardStyle } from '../hooks/useResponsive';
 
 type TabType = 'tips' | 'exercise' | 'diet' | 'articles' | 'indicators';
 
 export function Education() {
   const { profile } = useHealthStore();
+  const { isMobile } = useResponsive();
+  const cardStyle = useCardStyle();
   const [activeTab, setActiveTab] = useState<TabType>('tips');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const todayTip = getTodayTip();
@@ -30,8 +31,8 @@ export function Education() {
   ];
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 34, fontWeight: 700, color: '#1d1d1f', marginBottom: 24 }}>健康学院</h1>
+    <div style={{ maxWidth: isMobile ? '100%' : 900, margin: '0 auto' }}>
+      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', marginBottom: isMobile ? 16 : 24 }}>健康学院</h1>
 
       {/* Tab Navigation */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, overflowX: 'auto', paddingBottom: 8 }}>

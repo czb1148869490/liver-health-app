@@ -2,12 +2,13 @@ import { useEffect, useMemo } from 'react';
 import { useHealthStore } from '../stores/healthStore';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingDown, Activity, Calendar, Flame } from 'lucide-react';
-
-const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
+import { useResponsive, useCardStyle } from '../hooks/useResponsive';
 
 export function Statistics() {
   const store = useHealthStore();
   const { profile, weightLogs, exerciseLogs, records, currentStreak } = store;
+  const { isMobile } = useResponsive();
+  const cardStyle = useCardStyle();
 
   useEffect(() => { store.calculateStreak(); }, []);
 
@@ -59,8 +60,8 @@ export function Statistics() {
   if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: '#86868b' }}>请先在首页完成个人资料设置</div>;
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 34, fontWeight: 700, color: '#1d1d1f', marginBottom: 24 }}>数据统计</h1>
+    <div style={{ maxWidth: isMobile ? '100%' : 900, margin: '0 auto' }}>
+      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', marginBottom: isMobile ? 16 : 24 }}>数据统计</h1>
 
       {/* Stats Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 24 }}>

@@ -2,18 +2,19 @@ import { useState } from 'react';
 import { useHealthStore } from '../stores/healthStore';
 import { User, Target, Download, Trash2, Heart, Info, Check, Moon, Sun, Monitor, FileText } from 'lucide-react';
 import { generateMedicalReport } from '../utils/pdfExport';
-
-const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, boxShadow: '0 2px 12px rgba(0,0,0,0.08)', padding: 20 };
+import { useResponsive, useCardStyle } from '../hooks/useResponsive';
 
 export function SettingsPage() {
   const { profile, updateProfile, theme } = useHealthStore();
+  const { isMobile } = useResponsive();
+  const cardStyle = useCardStyle();
   const [activeTab, setActiveTab] = useState('profile');
 
   if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: '#86868b' }}>请先在首页完成个人资料设置</div>;
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 34, fontWeight: 700, color: '#1d1d1f', marginBottom: 24 }}>设置</h1>
+    <div style={{ maxWidth: isMobile ? '100%' : 800, margin: '0 auto' }}>
+      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', marginBottom: isMobile ? 16 : 24 }}>设置</h1>
       <div style={{ display: 'flex', gap: 24 }}>
         {/* Sidebar */}
         <div style={{ width: 200, flexShrink: 0 }}>

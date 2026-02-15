@@ -3,6 +3,7 @@ import { useHealthStore } from '../stores/healthStore';
 import type { ExerciseType, Mood } from '../types/health';
 import { Activity, UtensilsCrossed, Scale, Smile, Save, Check } from 'lucide-react';
 import { calculateCalories } from '../utils/calories';
+import { useResponsive, useCardStyle } from '../hooks/useResponsive';
 
 const exerciseTypes: { type: ExerciseType; label: string; icon: string }[] = [
   { type: 'walking', label: '快走', icon: '🚶' },
@@ -21,6 +22,8 @@ const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 18, 
 export function CheckIn() {
   const store = useHealthStore();
   const { profile, todayRecord, setTodayRecord, saveRecord, addExerciseLog, addWeightLog, updateProfile } = store;
+  const { isMobile } = useResponsive();
+  const cardStyle = useCardStyle();
   const [exerciseType, setExerciseType] = useState<ExerciseType>('walking');
   const [exerciseDuration, setExerciseDuration] = useState(30);
   const [weight, setWeight] = useState('');
@@ -88,8 +91,8 @@ export function CheckIn() {
   if (!profile) return <div style={{ padding: 40, textAlign: 'center', color: '#86868b' }}>请先在首页完成个人资料设置</div>;
 
   return (
-    <div style={{ maxWidth: 700, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 34, fontWeight: 700, color: '#1d1d1f', marginBottom: 24 }}>每日打卡</h1>
+    <div style={{ maxWidth: isMobile ? '100%' : 700, margin: '0 auto' }}>
+      <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: '#1d1d1f', marginBottom: isMobile ? 16 : 24 }}>每日打卡</h1>
 
       {saved && (
         <div style={{ position: 'fixed', top: 20, right: 20, background: '#1d1d1f', color: 'white', padding: '12px 20px', borderRadius: 14, display: 'flex', alignItems: 'center', zIndex: 100, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
@@ -119,7 +122,7 @@ export function CheckIn() {
         {!todayRecord?.exerciseCompleted ? (
           <div>
             <p style={{ fontSize: 15, fontWeight: 500, color: '#1d1d1f', marginBottom: 12 }}>运动类型</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8, marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)', gap: 8, marginBottom: 20 }}>
               {exerciseTypes.map(e => (
                 <button key={e.type} onClick={() => setExerciseType(e.type)} style={{ padding: 12, borderRadius: 14, border: exerciseType === e.type ? '2px solid #007aff' : '2px solid #e5e5ea', background: exerciseType === e.type ? 'rgba(0,122,255,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
                   <div style={{ fontSize: 24 }}>{e.icon}</div>
