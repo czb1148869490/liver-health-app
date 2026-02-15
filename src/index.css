@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  font-weight: 400;
+  color: #1d1d1f;
+  background: #ffffff;
+}
+
+/* Dark Mode */
+.dark {
+  color: #f5f5f7;
+  background: #000000;
+}
+
+.dark body {
+  background: #000000;
+  color: #f5f5f7;
+}
+
+.dark #root {
+  background: #000000;
+}
+
+/* Dark Mode Colors */
+.dark .card {
+  background: #1c1c1e;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+.dark .input {
+  background: #2c2c2e;
+  border-color: #3a3a3c;
+  color: #f5f5f7;
+}
+
+.dark .input:focus {
+  background: #1c1c1e;
+}
+
+.dark select.input {
+  background: #2c2c2e;
+  border-color: #3a3a3c;
+  color: #f5f5f7;
+}
+
+/* Dark Mode Layout */
+.dark aside {
+  background: #1c1c1e !important;
+  border-right-color: #3a3a3c !important;
+}
+
+.dark main {
+  background: #000000;
+}
+
+/* Form elements in dark mode */
+.dark input, .dark select, .dark textarea {
+  background: #2c2c2e !important;
+  border-color: #3a3a3c !important;
+  color: #f5f5f7 !important;
+}
+
+.dark input::placeholder {
+  color: #636366;
+}
+
+.dark select option {
+  background: #2c2c2e;
+  color: #f5f5f7;
+}
+
+/* Background variations */
+.dark [style*="background: white"],
+.dark [style*="background:#ffffff"],
+.dark [style*="background: #ffffff"] {
+  background: #1c1c1e !important;
+}
+
+.dark [style*="background: #f2f2f7"],
+.dark [style*="background:#f2f2f7"],
+.dark [style*="background: #f2f2f7"] {
+  background: #2c2c2e !important;
+}
+
+.dark [style*="background: #f0f0f0"] {
+  background: #3a3a3c !important;
+}
+
+/* Text colors */
+.dark [style*="color: #1d1d1f"] {
+  color: #f5f5f7 !important;
+}
+
+.dark [style*="color: #86868b"],
+.dark [style*="color:#86868b"],
+.dark [style*="color: #86868b"] {
+  color: #98989d !important;
+}
+
+.dark [style*="color: #aeaeb2"] {
+  color: #636366 !important;
+}
+
+/* Border colors */
+.dark [style*="border"] {
+  border-color: #3a3a3c !important;
+}
+
+/* Progress bar */
+.dark .progress {
+  background: #3a3a3c;
+}
+
+/* Link colors */
+.dark a {
+  color: #0a84ff;
+}
+
+/* Apple Card */
+.card {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 20px;
+}
+
+/* Apple Button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: 14px;
+  font-weight: 500;
+  font-size: 17px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #007aff;
+  color: white;
+}
+
+.btn-primary:active {
+  opacity: 0.8;
+}
+
+/* Apple Input */
+.input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #d1d1d6;
+  font-size: 17px;
+  background: #f2f2f7;
+  transition: all 0.2s;
+}
+
+.input:focus {
+  border-color: #007aff;
+  outline: none;
+  background: #ffffff;
+}
+
+/* Progress */
+.progress {
+  height: 6px;
+  background: #e5e5ea;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #34c759, #30d158);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Badge */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge-green {
+  background: rgba(52, 199, 89, 0.15);
+  color: #34c759;
+}
+
+.badge-orange {
+  background: rgba(255, 149, 0, 0.15);
+  color: #ff9500;
+}
+
+.badge-blue {
+  background: rgba(0, 122, 255, 0.15);
+  color: #007aff;
+}
+
+/* Stats */
+.stat-card {
+  padding: 24px;
+  border-radius: 20px;
+  color: white;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
