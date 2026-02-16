@@ -59,16 +59,6 @@ export function Trend() {
 
   return (
     <div style={{ maxWidth: isMobile ? '100%' : 500, margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: isMobile ? 24 : 28, fontWeight: 700, color: colors.text, margin: 0 }}>
-          数据趋势
-        </h1>
-        <p style={{ fontSize: 14, color: colors.textSecondary, marginTop: 4 }}>
-          追踪你的健康进步
-        </p>
-      </div>
-
       {/* Stats Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
         <IosCard style={{ textAlign: 'center', padding: 16 }}>

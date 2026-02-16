@@ -40,16 +40,6 @@ export function Profile() {
 
   return (
     <div style={{ maxWidth: isMobile ? '100%' : 500, margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: isMobile ? 24 : 28, fontWeight: 700, color: colors.text, margin: 0 }}>
-          我的
-        </h1>
-        <p style={{ fontSize: 14, color: colors.textSecondary, marginTop: 4 }}>
-          管理个人信息和设置
-        </p>
-      </div>
-
       {/* Profile Summary */}
       <IosCard style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

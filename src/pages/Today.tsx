@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { useHealthStore } from '../stores/healthStore';
 import type { Mood, ExerciseType } from '../types/health';
 import { Activity, Scale, Smile, ArrowRight, TrendingDown, Check, ChevronDown, ChevronUp } from 'lucide-react';
@@ -147,22 +146,6 @@ export function Today() {
         />
       )}
 
-      {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1 style={{ fontSize: isMobile ? 24 : 28, fontWeight: 700, color: colors.text, margin: 0 }}>
-              早上好，{profile?.name || '朋友'}
-            </h1>
-            <p style={{ fontSize: 14, color: colors.textSecondary, marginTop: 4 }}>
-              {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' })}
-            </p>
-          </div>
-          <Link to="/profile" style={{ padding: 8, textDecoration: 'none' }}>
-            <Activity size={24} color={colors.textSecondary} />
-          </Link>
-        </div>
-      </div>
 
       {/* Progress Ring */}
       <IosCard style={{ padding: 24 }}>
