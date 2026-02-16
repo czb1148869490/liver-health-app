@@ -165,24 +165,26 @@ export function Today() {
       </div>
 
       {/* Progress Ring */}
-      <IosCard style={{ textAlign: 'center', padding: 24 }}>
-        <IosProgress percentage={progress.percentage} size={140} />
-        <div style={{ marginTop: 16, fontSize: 15, color: colors.textSecondary }}>
-          今日已完成 {progress.total}/4
-        </div>
-        <div style={{ marginTop: 8, display: 'flex', justifyContent: 'center', gap: 16, fontSize: 13 }}>
-          <span style={{ color: currentRecord?.exerciseCompleted ? colors.success : colors.textTertiary }}>
-            {currentRecord?.exerciseCompleted ? '✓' : '○'} 运动
-          </span>
-          <span style={{ color: currentRecord?.breakfastCompleted ? colors.warning : colors.textTertiary }}>
-            {currentRecord?.breakfastCompleted ? '✓' : '○'} 早餐
-          </span>
-          <span style={{ color: currentRecord?.lunchCompleted ? colors.warning : colors.textTertiary }}>
-            {currentRecord?.lunchCompleted ? '✓' : '○'} 午餐
-          </span>
-          <span style={{ color: currentRecord?.dinnerCompleted ? colors.warning : colors.textTertiary }}>
-            {currentRecord?.dinnerCompleted ? '✓' : '○'} 晚餐
-          </span>
+      <IosCard style={{ padding: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <IosProgress percentage={progress.percentage} size={160} />
+          <div style={{ marginTop: 16, fontSize: 17, fontWeight: 500, color: colors.text }}>
+            今日已完成 {progress.total}/4
+          </div>
+          <div style={{ marginTop: 12, display: 'flex', justifyContent: 'center', gap: 20, fontSize: 13 }}>
+            <span style={{ color: currentRecord?.exerciseCompleted ? colors.success : colors.textTertiary }}>
+              {currentRecord?.exerciseCompleted ? '✓' : '○'} 运动
+            </span>
+            <span style={{ color: currentRecord?.breakfastCompleted ? colors.warning : colors.textTertiary }}>
+              {currentRecord?.breakfastCompleted ? '✓' : '○'} 早餐
+            </span>
+            <span style={{ color: currentRecord?.lunchCompleted ? colors.warning : colors.textTertiary }}>
+              {currentRecord?.lunchCompleted ? '✓' : '○'} 午餐
+            </span>
+            <span style={{ color: currentRecord?.dinnerCompleted ? colors.warning : colors.textTertiary }}>
+              {currentRecord?.dinnerCompleted ? '✓' : '○'} 晚餐
+            </span>
+          </div>
         </div>
       </IosCard>
 
