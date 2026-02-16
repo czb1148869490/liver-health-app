@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useHealthStore } from '../stores/healthStore';
+import type { Mood } from '../types/health';
 import { Activity, UtensilsCrossed, Scale, Smile, ArrowRight, Flame, TrendingDown, Target, Trophy, Heart } from 'lucide-react';
 import { getTodayTip } from '../data/dailyTips';
 import { useResponsive, useCardStyle, useGridStyle, useThemeColors } from '../hooks/useResponsive';
+import { MoodButton } from '../components/ios/IosComponents';
+import { impactLight } from '../utils/haptics';
 
 export function Dashboard() {
   const store = useHealthStore();
@@ -164,22 +167,19 @@ export function Dashboard() {
           </p>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {['😢', '😕', '😐', '🙂', '😊'].map((emoji, i) => (
-              <div
+              <MoodButton
                 key={i}
-                style={{
-                  width: isMobile ? 28 : 32,
-                  height: isMobile ? 28 : 32,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: isMobile ? 16 : 18,
-                  background: todayRecord?.mood === i + 1 ? colors.primary : colors.bgTertiary,
-                  opacity: todayRecord?.mood === i + 1 ? 1 : 0.5,
+                emoji={emoji}
+                isSelected={todayRecord?.mood === i + 1}
+                onClick={() => {
+                  if (!todayRecord) return;
+                  impactLight();
+                  const newRecord = { ...todayRecord, mood: (i + 1) as Mood };
+                  store.setTodayRecord(newRecord);
+                  store.saveRecord(newRecord);
                 }}
-              >
-                {emoji}
-              </div>
+                size={44}
+              />
             ))}
           </div>
         </div>

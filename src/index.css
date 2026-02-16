@@ -301,8 +301,180 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* iOS Animations */
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  50% { transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
 .animate-in {
   animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* iOS Toast - safe area aware */
+.ios-toast {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  animation: toastIn 0.3s ease-out;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.ios-toast.success {
+  background: #34c759;
+  color: white;
+}
+
+.ios-toast.error {
+  background: #ff3b30;
+  color: white;
+}
+
+.ios-toast.info {
+  background: #007aff;
+  color: white;
+}
+
+/* Touch target - iOS HIG 44pt minimum */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* iOS Button with haptic feedback */
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+  transition: transform 0.1s, opacity 0.1s;
+}
+
+/* iOS Confirm Dialog */
+.ios-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.ios-dialog {
+  background: var(--color-card-bg);
+  border-radius: 18px;
+  padding: 24px;
+  width: calc(100% - 48px);
+  max-width: 320px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: bounceIn 0.3s ease-out;
+}
+
+.ios-dialog-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.ios-dialog-message {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.ios-dialog-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.ios-dialog-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ios-dialog-btn:active {
+  transform: scale(0.97);
+}
+
+.ios-dialog-btn.cancel {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text);
+}
+
+.ios-dialog-btn.danger {
+  background: #ff3b30;
+  color: white;
+}
+
+.ios-dialog-btn.primary {
+  background: #007aff;
+  color: white;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Page transition */
+.page-enter {
+  animation: pageIn 0.3s ease-out;
 }
 
 /* Mobile sidebar */

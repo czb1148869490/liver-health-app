@@ -4,6 +4,8 @@ import type { ExerciseType, Mood } from '../types/health';
 import { Activity, UtensilsCrossed, Scale, Smile, Save, Check } from 'lucide-react';
 import { calculateCalories } from '../utils/calories';
 import { useResponsive, useCardStyle, useThemeColors } from '../hooks/useResponsive';
+import { IosToast, IosConfirm } from '../components/ios/IosComponents';
+import { impactLight, success } from '../utils/haptics';
 
 const exerciseTypes: { type: ExerciseType; label: string; icon: string }[] = [
   { type: 'walking', label: '快走', icon: '🚶' },
@@ -19,7 +21,7 @@ const moods = ['😢', '😕', '😐', '🙂', '😊'];
 
 export function CheckIn() {
   const store = useHealthStore();
-  const { profile, todayRecord, setTodayRecord, saveRecord, addExerciseLog, addWeightLog, updateProfile } = store;
+  const { profile, todayRecord, setTodayRecord, saveRecord, addExerciseLog, addWeightLog, updateProfile, getTodayRecord } = store;
   const { isMobile } = useResponsive();
   const cardStyle = useCardStyle();
   const colors = useThemeColors();
@@ -28,6 +30,13 @@ export function CheckIn() {
   const [weight, setWeight] = useState('');
   const [notes, setNotes] = useState('');
   const [saved, setSaved] = useState(false);
+  const [confirmState, setConfirmState] = useState<{
+    open: boolean;
+    meal: 'breakfast' | 'lunch' | 'dinner' | null;
+  }>({ open: false, meal: null });
+
+  // 获取今日记录（自动处理跨天更新）
+  const currentRecord = todayRecord?.date === store.getTodayDate() ? todayRecord : getTodayRecord();
 
   // 计算卡路里消耗
   const calorieInfo = useMemo(() => {
@@ -37,50 +46,77 @@ export function CheckIn() {
 
   useEffect(() => {
     store.initTodayRecord();
-  }, []);
+  }, [store]);
 
   useEffect(() => {
     if (profile?.currentWeight) setWeight(profile.currentWeight.toString());
-    if (todayRecord?.notes) setNotes(todayRecord.notes);
-  }, [profile, todayRecord]);
+    if (currentRecord?.notes) setNotes(currentRecord.notes);
+  }, [profile, currentRecord]);
 
   const handleExercise = () => {
-    const newRecord = { ...todayRecord!, exerciseCompleted: true, exerciseDuration, exerciseType };
+    if (!currentRecord) return;
+    const newRecord = { ...currentRecord, exerciseCompleted: true, exerciseDuration, exerciseType };
     setTodayRecord(newRecord);
     saveRecord(newRecord);
-    addExerciseLog({ date: todayRecord!.date, type: exerciseType, duration: exerciseDuration });
+    addExerciseLog({ date: currentRecord.date, type: exerciseType, duration: exerciseDuration });
+    success();
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleMeal = (meal: 'breakfast' | 'lunch' | 'dinner') => {
-    const newRecord = { ...todayRecord!, [`${meal}Completed`]: !todayRecord![`${meal}Completed` as keyof typeof todayRecord] };
+  const handleMealClick = (meal: 'breakfast' | 'lunch' | 'dinner') => {
+    if (!currentRecord) return;
+    const isCurrentlyCompleted = currentRecord[`${meal}Completed` as keyof typeof currentRecord];
+
+    // 如果要取消已完成的状态，显示确认对话框
+    if (isCurrentlyCompleted) {
+      setConfirmState({ open: true, meal });
+      return;
+    }
+
+    // 直接更新
+    impactLight();
+    const newRecord = { ...currentRecord, [`${meal}Completed`]: true };
     setTodayRecord(newRecord);
     saveRecord(newRecord);
   };
 
+  const confirmCancelMeal = () => {
+    if (!currentRecord || !confirmState.meal) return;
+    impactLight();
+    const newRecord = { ...currentRecord, [`${confirmState.meal}Completed`]: false };
+    setTodayRecord(newRecord);
+    saveRecord(newRecord);
+    setConfirmState({ open: false, meal: null });
+  };
+
   const handleMood = (mood: Mood) => {
-    const newRecord = { ...todayRecord!, mood };
+    if (!currentRecord) return;
+    const newRecord = { ...currentRecord, mood };
     setTodayRecord(newRecord);
     saveRecord(newRecord);
   };
 
   const handleWeight = () => {
+    if (!currentRecord) return;
     const v = parseFloat(weight);
     if (isNaN(v)) return;
-    const newRecord = { ...todayRecord!, weight: v };
+    const newRecord = { ...currentRecord, weight: v };
     setTodayRecord(newRecord);
     saveRecord(newRecord);
-    addWeightLog({ date: todayRecord!.date, weight: v });
+    addWeightLog({ date: currentRecord.date, weight: v });
     updateProfile({ currentWeight: v });
+    success();
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
   const handleNotes = () => {
-    const newRecord = { ...todayRecord!, notes };
+    if (!currentRecord) return;
+    const newRecord = { ...currentRecord, notes };
     setTodayRecord(newRecord);
     saveRecord(newRecord);
+    success();
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -92,9 +128,19 @@ export function CheckIn() {
       <h1 style={{ fontSize: isMobile ? 24 : 34, fontWeight: 700, color: colors.text, marginBottom: isMobile ? 16 : 24 }}>每日打卡</h1>
 
       {saved && (
-        <div style={{ position: 'fixed', top: 20, right: 20, background: colors.text, color: colors.bg, padding: '12px 20px', borderRadius: 14, display: 'flex', alignItems: 'center', zIndex: 100, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
-          <Check size={18} style={{ marginRight: 8 }} /> 已保存
-        </div>
+        <IosToast message="已保存" type="success" />
+      )}
+
+      {confirmState.open && (
+        <IosConfirm
+          title="取消记录"
+          message={`确定要取消${confirmState.meal === 'breakfast' ? '早餐' : confirmState.meal === 'lunch' ? '午餐' : '晚餐'}记录吗？`}
+          confirmText="确定取消"
+          cancelText="保留"
+          onConfirm={confirmCancelMeal}
+          onCancel={() => setConfirmState({ open: false, meal: null })}
+          danger
+        />
       )}
 
       {/* 运动 */}
@@ -109,17 +155,17 @@ export function CheckIn() {
               <p style={{ fontSize: 14, color: colors.textSecondary, margin: '4px 0 0 0' }}>目标: {profile.targetExerciseMinutes} 分钟</p>
             </div>
           </div>
-          {todayRecord?.exerciseCompleted ? (
-            <span style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, background: colors.badgeGreenBg, color: colors.badgeGreenText }}>已完成 {todayRecord.exerciseDuration} 分钟</span>
+          {currentRecord?.exerciseCompleted ? (
+            <span style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, background: colors.badgeGreenBg, color: colors.badgeGreenText }}>已完成 {currentRecord.exerciseDuration} 分钟</span>
           ) : (
             <span style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 600, background: colors.badgeOrangeBg, color: colors.badgeOrangeText }}>待完成</span>
           )}
         </div>
 
-        {!todayRecord?.exerciseCompleted ? (
+        {!currentRecord?.exerciseCompleted ? (
           <div>
             <p style={{ fontSize: 15, fontWeight: 500, color: colors.text, marginBottom: 12 }}>运动类型</p>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)', gap: 8, marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)', gap: isMobile ? 10 : 8, marginBottom: 20 }}>
               {exerciseTypes.map(e => (
                 <button key={e.type} onClick={() => setExerciseType(e.type)} style={{ padding: 12, borderRadius: 14, border: exerciseType === e.type ? `2px solid ${colors.primary}` : `2px solid ${colors.border}`, background: exerciseType === e.type ? 'rgba(0,122,255,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
                   <div style={{ fontSize: 24 }}>{e.icon}</div>
@@ -145,7 +191,7 @@ export function CheckIn() {
         ) : (
           <div style={{ background: 'rgba(52,199,89,0.1)', padding: 16, borderRadius: 14, display: 'flex', alignItems: 'center' }}>
             <Check size={20} color={colors.success} style={{ marginRight: 10 }} />
-            <span style={{ fontWeight: 500, color: colors.success }}>今日已完成 {todayRecord.exerciseDuration} 分钟 {exerciseTypes.find(e => e.type === todayRecord.exerciseType)?.label}</span>
+            <span style={{ fontWeight: 500, color: colors.success }}>今日已完成 {currentRecord.exerciseDuration} 分钟 {exerciseTypes.find(e => e.type === currentRecord.exerciseType)?.label}</span>
           </div>
         )}
       </div>
@@ -163,9 +209,9 @@ export function CheckIn() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
           {(['breakfast', 'lunch', 'dinner'] as const).map(meal => {
-            const completed = todayRecord?.[`${meal}Completed` as keyof typeof todayRecord];
+            const completed = currentRecord?.[`${meal}Completed` as keyof typeof currentRecord];
             return (
-              <button key={meal} onClick={() => handleMeal(meal)} style={{ padding: 16, borderRadius: 14, border: completed ? `2px solid ${colors.warning}` : `2px solid ${colors.border}`, background: completed ? 'rgba(255,149,0,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
+              <button key={meal} onClick={() => handleMealClick(meal)} style={{ padding: 16, borderRadius: 14, border: completed ? `2px solid ${colors.warning}` : `2px solid ${colors.border}`, background: completed ? 'rgba(255,149,0,0.08)' : 'transparent', cursor: 'pointer', textAlign: 'center' }}>
                 <div style={{ fontSize: 28 }}>{meal === 'breakfast' ? '🌅' : meal === 'lunch' ? '☀️' : '🌙'}</div>
                 <div style={{ fontSize: 15, fontWeight: 600, color: colors.text, marginTop: 8 }}>{meal === 'breakfast' ? '早餐' : meal === 'lunch' ? '午餐' : '晚餐'}</div>
                 <div style={{ fontSize: 13, color: completed ? colors.warning : colors.textTertiary, marginTop: 4 }}>{completed ? '✓ 已吃' : '未记录'}</div>
@@ -216,7 +262,7 @@ export function CheckIn() {
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {moods.map((emoji, i) => (
-            <button key={i} onClick={() => handleMood((i + 1) as Mood)} style={{ width: 48, height: 48, borderRadius: 24, background: todayRecord?.mood === i + 1 ? colors.primary : colors.bgTertiary, border: 'none', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{emoji}</button>
+            <button key={i} onClick={() => handleMood((i + 1) as Mood)} style={{ width: 48, height: 48, borderRadius: 24, background: currentRecord?.mood === i + 1 ? colors.primary : colors.bgTertiary, border: 'none', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{emoji}</button>
           ))}
         </div>
       </div>

@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHealthStore } from '../stores/healthStore';
 import { User, Target, Download, Trash2, Heart, Info, Check, Moon, Sun, Monitor, FileText } from 'lucide-react';
 import { generateMedicalReport } from '../utils/pdfExport';
 import { useResponsive, useCardStyle, useThemeColors } from '../hooks/useResponsive';
+import { IosConfirm, IosToast } from '../components/ios/IosComponents';
+import { impactLight, success, error } from '../utils/haptics';
 
 export function SettingsPage() {
   const { profile, updateProfile, theme } = useHealthStore();
@@ -124,6 +126,13 @@ function ProfileSettings({ profile, updateProfile, colors }: {
   const [height, setHeight] = useState(profile.height.toString());
   const [currentWeight, setCurrentWeight] = useState(profile.currentWeight?.toString() || '');
   const [saved, setSaved] = useState(false);
+
+  // 同步外部profile变化到组件状态
+  useEffect(() => {
+    setName(profile.name);
+    setHeight(profile.height.toString());
+    setCurrentWeight(profile.currentWeight?.toString() || '');
+  }, [profile]);
 
   const handleSave = () => {
     updateProfile({ name, height: parseFloat(height) || profile.height, currentWeight: parseFloat(currentWeight) || profile.currentWeight });
@@ -282,6 +291,12 @@ function TargetSettings({ profile, updateProfile, colors }: {
 function DataSettings({ colors }: { colors: ReturnType<typeof useThemeColors> }) {
   const { profile, records, checkups, exerciseLogs, weightLogs, currentStreak } = useHealthStore();
   const cardStyle = useCardStyle();
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [confirmState, setConfirmState] = useState<{
+    open: boolean;
+    type: 'import' | 'clear' | null;
+  }>({ open: false, type: null });
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const handleExportPDF = () => {
     if (!profile) return;
@@ -293,6 +308,9 @@ function DataSettings({ colors }: { colors: ReturnType<typeof useThemeColors> })
       weightLogs,
       currentStreak,
     });
+    success();
+    setToast({ message: 'PDF导出成功', type: 'success' });
+    setTimeout(() => setToast(null), 2000);
   };
 
   const handleExport = () => {
@@ -305,42 +323,53 @@ function DataSettings({ colors }: { colors: ReturnType<typeof useThemeColors> })
       a.download = `health-data-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
+      success();
+      setToast({ message: '数据导出成功', type: 'success' });
+      setTimeout(() => setToast(null), 2000);
     }
   };
 
-  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    setImportFile(file);
+    setConfirmState({ open: true, type: 'import' });
+    event.target.value = '';
+  };
 
+  const executeImport = () => {
+    if (!importFile) return;
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
         const parsed = JSON.parse(content);
-
         if (!parsed.state) {
           throw new Error('无效的数据格式');
         }
-
-        if (confirm('导入数据将覆盖当前所有数据，确定要继续吗？')) {
-          localStorage.setItem('health-storage', JSON.stringify({ state: parsed.state, version: 1 }));
-          alert('数据导入成功！页面将重新加载。');
-          window.location.reload();
-        }
+        localStorage.setItem('health-storage', JSON.stringify({ state: parsed.state, version: 1 }));
+        setToast({ message: '数据导入成功，页面将重新加载', type: 'success' });
+        setTimeout(() => window.location.reload(), 1500);
       } catch (err) {
-        alert('导入失败：无效的数据文件');
-        console.error('Import error:', err);
+        error();
+        setToast({ message: '导入失败：无效的数据文件', type: 'error' });
+        setTimeout(() => setToast(null), 2000);
       }
     };
-    reader.readAsText(file);
-    event.target.value = '';
+    reader.readAsText(importFile);
+    setConfirmState({ open: false, type: null });
+    setImportFile(null);
   };
 
   const handleClear = () => {
-    if (confirm('确定要清除所有数据吗？此操作不可恢复。')) {
-      localStorage.removeItem('health-storage');
-      window.location.reload();
-    }
+    setConfirmState({ open: true, type: 'clear' });
+  };
+
+  const executeClear = () => {
+    localStorage.removeItem('health-storage');
+    setConfirmState({ open: false, type: null });
+    setToast({ message: '数据已清除，页面将重新加载', type: 'success' });
+    setTimeout(() => window.location.reload(), 1500);
   };
 
   return (
@@ -426,7 +455,7 @@ function DataSettings({ colors }: { colors: ReturnType<typeof useThemeColors> })
                 id="import-file"
                 type="file"
                 accept=".json"
-                onChange={handleImport}
+                onChange={handleFileChange}
                 style={{ display: 'none' }}
               />
             </div>
@@ -463,6 +492,36 @@ function DataSettings({ colors }: { colors: ReturnType<typeof useThemeColors> })
           <p style={{ fontSize: 13, color: colors.textSecondary, margin: 0 }}>数据存储在您的浏览器本地存储中，不会上传到任何服务器。</p>
         </div>
       </div>
+
+      {/* iOS Confirm Dialogs */}
+      {confirmState.open && confirmState.type === 'import' && (
+        <IosConfirm
+          title="导入数据"
+          message="导入数据将覆盖当前所有数据，确定要继续吗？"
+          confirmText="确定导入"
+          cancelText="取消"
+          onConfirm={executeImport}
+          onCancel={() => setConfirmState({ open: false, type: null })}
+          danger
+        />
+      )}
+
+      {confirmState.open && confirmState.type === 'clear' && (
+        <IosConfirm
+          title="清除数据"
+          message="确定要清除所有数据吗？此操作不可恢复。"
+          confirmText="确定清除"
+          cancelText="取消"
+          onConfirm={executeClear}
+          onCancel={() => setConfirmState({ open: false, type: null })}
+          danger
+        />
+      )}
+
+      {/* iOS Toast */}
+      {toast && (
+        <IosToast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
     </div>
   );
 }
@@ -485,7 +544,11 @@ function AppearanceSettings({ colors }: { colors: ReturnType<typeof useThemeColo
           {themeOptions.map((option) => (
             <button
               key={option.value}
-              onClick={() => setTheme(option.value)}
+              onClick={() => {
+                impactLight();
+                setTheme(option.value);
+              }}
+              className="touch-target"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -496,6 +559,7 @@ function AppearanceSettings({ colors }: { colors: ReturnType<typeof useThemeColo
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.2s',
+                minHeight: 44,
               }}
             >
               <div style={{

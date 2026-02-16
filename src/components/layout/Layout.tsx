@@ -73,6 +73,7 @@ export function Layout() {
                 <Link
                   key={item.path}
                   to={item.path}
+                  className="touch-target"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -84,6 +85,7 @@ export function Layout() {
                     background: isActive ? 'rgba(0,122,255,0.1)' : 'transparent',
                     textDecoration: 'none',
                     marginBottom: 2,
+                    minHeight: 44,
                   }}
                 >
                   <Icon size={20} style={{ marginRight: 12 }} />
@@ -147,6 +149,7 @@ export function Layout() {
         </div>
         <button
           onClick={() => setSidebarOpen(true)}
+          className="touch-target"
           style={{
             background: 'none',
             border: 'none',
@@ -183,7 +186,7 @@ export function Layout() {
         paddingBottom: 'env(safe-area-inset-bottom)',
         paddingTop: 6,
         zIndex: 100,
-        height: 'calc(50px + env(safe-area-inset-bottom))'
+        height: 'calc(56px + env(safe-area-inset-bottom))'
       }}>
         {navItems.map((item) => {
           const Icon = item.icon;
