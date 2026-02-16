@@ -21,14 +21,27 @@ export function useResponsive() {
   const [isSmallMobile, setIsSmallMobile] = useState(false);
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
     const check = () => {
-      const width = window.innerWidth;
-      setIsMobile(width < 768);
-      setIsSmallMobile(width < 375);
+      // 使用防抖减少频繁触发
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        const width = window.innerWidth;
+        setIsMobile(width < 768);
+        setIsSmallMobile(width < 375);
+      }, 150);
     };
     check();
     window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
+    return () => {
+      window.removeEventListener('resize', check);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
   return { isMobile, isSmallMobile };

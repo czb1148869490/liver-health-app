@@ -50,7 +50,10 @@ interface HealthState {
   completeOnboarding: () => void;
 
   todayRecord: DailyRecord | null;
+  getTodayDate: () => string;
+  getTodayRecord: () => DailyRecord;
   setTodayRecord: (record: DailyRecord) => void;
+  initTodayRecord: () => void;
   updateTodayRecord: (updates: Partial<DailyRecord>) => void;
 
   records: Record<string, DailyRecord>;
@@ -145,16 +148,59 @@ export const useHealthStore = create<HealthState>()(
       updateProfile: (updates) => set((state) => ({ profile: state.profile ? { ...state.profile, ...updates } : null })),
       completeOnboarding: () => set((state) => ({ profile: state.profile ? { ...state.profile, onboardingCompleted: true } : null })),
 
-      setTodayRecord: (record) => set({ todayRecord: record }),
-      initTodayRecord: () => set((state) => {
-        const today = getTodayDate();
-        // 如果 todayRecord 不是今天的，则从 records 中查找今天的记录，或创建新的
-        if (state.todayRecord?.date !== today) {
-          const todayRecord = state.records[today];
-          return { todayRecord: todayRecord || { id: generateId(), date: today, exerciseCompleted: false, exerciseDuration: 0, breakfastCompleted: false, lunchCompleted: false, dinnerCompleted: false, mood: 3, notes: '' } };
-        }
-        return {};
-      }),
+      // 获取今天的日期字符串
+  getTodayDate: () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  },
+
+  // 获取今天的记录，自动检查跨天更新
+  getTodayRecord: () => {
+    const state = get();
+    const today = getTodayDate();
+
+    // 如果 todayRecord 不是今天的，则从 records 中查找今天的记录，或创建新的
+    if (state.todayRecord?.date !== today) {
+      const todayRecord = state.records[today] || {
+        id: generateId(),
+        date: today,
+        exerciseCompleted: false,
+        exerciseDuration: 0,
+        breakfastCompleted: false,
+        lunchCompleted: false,
+        dinnerCompleted: false,
+        mood: 3,
+        notes: ''
+      };
+      // 更新状态中的 todayRecord
+      set({ todayRecord });
+      return todayRecord;
+    }
+    return state.todayRecord;
+  },
+
+  setTodayRecord: (record) => set({ todayRecord: record }),
+  initTodayRecord: () => {
+    // 初始化今日记录，检查是否需要跨天更新
+    const state = get();
+    const today = getTodayDate();
+
+    // 如果 todayRecord 不是今天的，则从 records 中查找今天的记录，或创建新的
+    if (state.todayRecord?.date !== today) {
+      const todayRecord = state.records[today] || {
+        id: generateId(),
+        date: today,
+        exerciseCompleted: false,
+        exerciseDuration: 0,
+        breakfastCompleted: false,
+        lunchCompleted: false,
+        dinnerCompleted: false,
+        mood: 3,
+        notes: ''
+      };
+      set({ todayRecord });
+    }
+  },
       updateTodayRecord: (updates) => set((state) => ({
         todayRecord: state.todayRecord ? { ...state.todayRecord, ...updates } : { id: generateId(), date: getTodayDate(), exerciseCompleted: false, exerciseDuration: 0, breakfastCompleted: false, lunchCompleted: false, dinnerCompleted: false, mood: 3, ...updates }
       })),
@@ -202,18 +248,42 @@ export const useHealthStore = create<HealthState>()(
       },
 
       updateMilestones: () => {
-        const { profile, currentStreak, exerciseLogs } = get();
+        const { profile, currentStreak, exerciseLogs, milestones: existingMilestones } = get();
         if (!profile) return;
         const totalExerciseMinutes = exerciseLogs.reduce((sum, log) => sum + log.duration, 0);
         const weightLossPercent = profile.initialWeight > 0 ? ((profile.initialWeight - profile.currentWeight) / profile.initialWeight) * 100 : 0;
-        const milestones: Milestone[] = [
-          { id: 'streak_7', type: 'streak_7', title: '一周坚持', description: '连续7天打卡', target: 7, current: currentStreak, completed: currentStreak >= 7 },
-          { id: 'streak_15', type: 'streak_15', title: '半月坚持', description: '连续15天打卡', target: 15, current: currentStreak, completed: currentStreak >= 15 },
-          { id: 'streak_30', type: 'streak_30', title: '满月挑战', description: '连续30天打卡', target: 30, current: currentStreak, completed: currentStreak >= 30 },
-          { id: 'weight_5', type: 'weight_5', title: '减重5%', description: '减轻初始体重的5%', target: 5, current: weightLossPercent, completed: weightLossPercent >= 5 },
-          { id: 'weight_10', type: 'weight_10', title: '减重10%', description: '减轻初始体重的10%', target: 10, current: weightLossPercent, completed: weightLossPercent >= 10 },
-          { id: 'exercise_total', type: 'exercise_total', title: '运动累积', description: '累计运动500分钟', target: 500, current: totalExerciseMinutes, completed: totalExerciseMinutes >= 500 },
+
+        // 定义里程碑数据并保留已存在的completedAt
+        const milestoneDefinitions = [
+          { id: 'streak_7', type: 'streak_7' as const, title: '一周坚持', description: '连续7天打卡', target: 7, current: currentStreak, completed: currentStreak >= 7 },
+          { id: 'streak_15', type: 'streak_15' as const, title: '半月坚持', description: '连续15天打卡', target: 15, current: currentStreak, completed: currentStreak >= 15 },
+          { id: 'streak_30', type: 'streak_30' as const, title: '满月挑战', description: '连续30天打卡', target: 30, current: currentStreak, completed: currentStreak >= 30 },
+          { id: 'weight_5', type: 'weight_5' as const, title: '减重5%', description: '减轻初始体重的5%', target: 5, current: weightLossPercent, completed: weightLossPercent >= 5 },
+          { id: 'weight_10', type: 'weight_10' as const, title: '减重10%', description: '减轻初始体重的10%', target: 10, current: weightLossPercent, completed: weightLossPercent >= 10 },
+          { id: 'exercise_total', type: 'exercise_total' as const, title: '运动累积', description: '累计运动500分钟', target: 500, current: totalExerciseMinutes, completed: totalExerciseMinutes >= 500 },
         ];
+
+        // 如果里程碑刚完成，设置completedAt时间戳
+        const milestones: Milestone[] = milestoneDefinitions.map((def) => {
+          const existing = existingMilestones.find((m) => m.id === def.id);
+          const isNowCompleted = def.completed;
+          const wasCompleted = existing?.completed || false;
+
+          // 只有当里程碑从未完成变为完成时，才设置completedAt
+          let completedAt = existing?.completedAt;
+          if (isNowCompleted && !wasCompleted) {
+            completedAt = Date.now();
+          } else if (isNowCompleted && wasCompleted) {
+            // 保持原有的completedAt
+            completedAt = existing?.completedAt;
+          }
+
+          return {
+            ...def,
+            completedAt,
+          };
+        });
+
         set({ milestones });
       },
 
@@ -278,21 +348,45 @@ export const useHealthStore = create<HealthState>()(
       },
 
       checkReminders: () => {
-        const { reminders, todayRecord, profile, lastNotificationDate, sentRemindersToday } = get();
+        const state = get();
+        const { reminders, profile, lastNotificationDate, sentRemindersToday, records } = state;
         const now = new Date();
         const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const currentSecond = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
         const currentMinute = now.getHours() * 60 + now.getMinutes();
 
-        // 如果日期变化了，重置已发送的提醒列表
+        // 如果日期变化了，重置已发送的提醒列表并更新todayRecord
         let sentReminders = lastNotificationDate === today ? [...sentRemindersToday] : [];
         if (lastNotificationDate !== today) {
-          set({ lastNotificationDate: today, sentRemindersToday: [] });
+          // 更新todayRecord为新的一天
+          const todayRecord = records[today] || {
+            id: generateId(),
+            date: today,
+            exerciseCompleted: false,
+            exerciseDuration: 0,
+            breakfastCompleted: false,
+            lunchCompleted: false,
+            dinnerCompleted: false,
+            mood: 3,
+            notes: ''
+          };
+          set({ lastNotificationDate: today, sentRemindersToday: [], todayRecord });
         }
+
+        // 获取当前的todayRecord（可能已更新）
+        const todayRecord = get().todayRecord;
+
+        // 解析提醒时间并检查是否在触发窗口内（前后60秒内）
+        const checkReminderTime = (reminderTime: string): boolean => {
+          const [hours, minutes] = reminderTime.split(':').map(Number);
+          const reminderSecond = hours * 3600 + minutes * 60;
+          return Math.abs(currentSecond - reminderSecond) <= 60;
+        };
 
         reminders.forEach((reminder) => {
           if (!reminder.enabled) return;
-          if (reminder.time !== currentTime) return;
+          // 使用时间窗口检查而不是精确匹配
+          if (!checkReminderTime(reminder.time)) return;
           // 检查这个提醒今天是否已经发送过
           if (sentReminders.includes(reminder.id)) return;
 
@@ -318,7 +412,7 @@ export const useHealthStore = create<HealthState>()(
           set({ sentRemindersToday: sentReminders });
         }
 
-        // 检查是否需要提醒用餐 (只在每小时的0-4分钟内检查)
+        // 检查是否需要提醒用餐 (只在每小时的0-4分钟内检查，扩大窗口以减少遗漏)
         if (currentMinute < 5) {
           const hour = now.getHours();
           if (hour === 7 && !todayRecord?.breakfastCompleted && !sentReminders.includes('meal_breakfast')) {

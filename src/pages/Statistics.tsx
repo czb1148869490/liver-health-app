@@ -126,7 +126,7 @@ export function Statistics() {
         ) : (
           <div style={{ height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors.textTertiary }}>暂无体重数据，请先记录体重</div>
         )}
-        {profile.initialWeight && profile.currentWeight && (
+        {profile.initialWeight && profile.currentWeight && profile.initialWeight > 0 && (
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16, fontSize: 13 }}>
             <span style={{ color: colors.textSecondary }}>初始: {profile.initialWeight} kg</span>
             <span style={{ color: colors.success, fontWeight: 600 }}>已减 {(((profile.initialWeight - profile.currentWeight) / profile.initialWeight) * 100).toFixed(1)}% ({(profile.initialWeight - profile.currentWeight).toFixed(1)} kg)</span>
@@ -156,7 +156,7 @@ export function Statistics() {
       {/* Calendar */}
       <div style={cardStyle}>
         <h2 style={{ fontSize: 20, fontWeight: 600, color: colors.text, marginBottom: 20 }}>打卡日历 (近30天)</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${isMobile ? 7 : 10}, 1fr)`, gap: 8 }}>
           {calendarData.map((day) => (
             <div
               key={day.date}

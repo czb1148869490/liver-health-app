@@ -72,11 +72,11 @@ export const generateMedicalReport = (data: ReportData): void => {
 
     doc.text(`记录次数: ${weightLogs.length} 次`, 25, yPos);
     yPos += 7;
-    doc.text(`起始体重: ${firstWeight.toFixed(1)} kg`, 25, yPos);
+    doc.text(`起始体重: ${firstWeight?.toFixed(1) || '-'} kg`, 25, yPos);
     yPos += 7;
-    doc.text(`最新体重: ${lastWeight.toFixed(1)} kg`, 25, yPos);
+    doc.text(`最新体重: ${lastWeight?.toFixed(1) || '-'} kg`, 25, yPos);
     yPos += 7;
-    const percentChange = ((weightChange / firstWeight) * 100).toFixed(1);
+    const percentChange = firstWeight > 0 ? ((weightChange / firstWeight) * 100).toFixed(1) : '0';
     doc.text(
       `体重变化: ${weightChange > 0 ? '+' : ''}${weightChange.toFixed(1)} kg (${percentChange}%)`,
       25,

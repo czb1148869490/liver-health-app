@@ -11,10 +11,10 @@ import { Education } from './pages/Education'
 import { useHealthStore } from './stores/healthStore'
 
 function App() {
-  const { requestNotification, checkReminders, notificationPermission, theme } = useHealthStore();
+  const { checkReminders, theme } = useHealthStore();
 
+  // 主题变化时更新
   useEffect(() => {
-    // 初始化主题
     const root = document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
@@ -28,11 +28,12 @@ function App() {
         root.classList.remove('dark');
       }
     }
+  }, [theme]);
 
-    // 首次加载请求通知权限
-    if (!notificationPermission) {
-      requestNotification();
-    }
+  // 检查提醒和定时器
+  useEffect(() => {
+    // 检查提醒（不主动请求权限，让用户主动开启）
+    checkReminders();
 
     // 每分钟检查一次提醒
     const interval = setInterval(() => {
@@ -41,7 +42,7 @@ function App() {
 
     // 组件卸载时清除定时器
     return () => clearInterval(interval);
-  }, []);
+  }, [checkReminders]);
 
   return (
     <BrowserRouter>

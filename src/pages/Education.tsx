@@ -19,7 +19,7 @@ export function Education() {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const todayTip = getTodayTip();
   const dietTip = getTodayDietTip();
-  const bmi = profile ? calculateBMI(profile.height, profile.currentWeight) : 0;
+  const bmi = profile && profile.height > 0 ? calculateBMI(profile.height, profile.currentWeight || 0) : 0;
   const bmiInfo = getBMICategory(bmi);
   const prescription = profile ? generateExercisePrescription(profile) : null;
 

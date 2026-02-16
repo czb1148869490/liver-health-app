@@ -24,6 +24,7 @@ export interface ExerciseRecommendation {
 
 // 计算BMI
 export const calculateBMI = (heightCm: number, weightKg: number): number => {
+  if (heightCm <= 0 || weightKg <= 0) return 0;
   const heightM = heightCm / 100;
   return weightKg / (heightM * heightM);
 };
