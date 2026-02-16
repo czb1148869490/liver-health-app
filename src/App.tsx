@@ -1,13 +1,9 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Layout } from './components/layout/Layout'
-import { Dashboard } from './pages/Dashboard'
-import { CheckIn } from './pages/CheckIn'
-import { Statistics } from './pages/Statistics'
-import { Reminders } from './pages/Reminders'
-import { Achievements } from './pages/Achievements'
-import { SettingsPage } from './pages/Settings'
-import { Education } from './pages/Education'
+import { Today } from './pages/Today'
+import { Trend } from './pages/Trend'
+import { Profile } from './pages/Profile'
 import { useHealthStore } from './stores/healthStore'
 
 function App() {
@@ -48,13 +44,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="checkin" element={<CheckIn />} />
-          <Route path="statistics" element={<Statistics />} />
-          <Route path="reminders" element={<Reminders />} />
-          <Route path="achievements" element={<Achievements />} />
-          <Route path="education" element={<Education />} />
-          <Route path="settings" element={<SettingsPage />} />
+          <Route index element={<Today />} />
+          <Route path="trend" element={<Trend />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>

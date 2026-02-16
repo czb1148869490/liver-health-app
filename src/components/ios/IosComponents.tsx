@@ -1,6 +1,135 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { Check, X, Loader2 } from 'lucide-react';
 
+// iOS Card Component - 统一卡片样式
+interface IosCardProps {
+  children: ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
+  onClick?: () => void;
+}
+
+export function IosCard({ children, style, className = '', onClick }: IosCardProps) {
+  return (
+    <div
+      className={className}
+      onClick={onClick}
+      style={{
+        background: 'var(--color-card-bg)',
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 12,
+        border: '1px solid var(--color-border)',
+        boxShadow: 'none',
+        cursor: onClick ? 'pointer' : 'default',
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// iOS List Component - 列表项样式
+interface IosListItemProps {
+  children: ReactNode;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+}
+
+export function IosListItem({ children, onClick, style }: IosListItemProps) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '12px 0',
+        borderBottom: '1px solid var(--color-border)',
+        minHeight: 44,
+        cursor: onClick ? 'pointer' : 'default',
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function IosList({ children }: { children: ReactNode }) {
+  return <div>{children}</div>;
+}
+
+// iOS Circular Progress Component - 环形进度
+interface IosProgressProps {
+  percentage: number;
+  size?: number;
+  strokeWidth?: number;
+  color?: string;
+  showLabel?: boolean;
+  label?: string;
+}
+
+export function IosProgress({
+  percentage,
+  size = 120,
+  strokeWidth = 10,
+  color = '#007aff',
+  showLabel = true,
+  label
+}: IosProgressProps) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div style={{ position: 'relative', width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        {/* Background circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="var(--color-progress-bg)"
+          strokeWidth={strokeWidth}
+        />
+        {/* Progress circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.5s ease' }}
+        />
+      </svg>
+      {showLabel && (
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: size * 0.25, fontWeight: 700, color: 'var(--color-text)' }}>
+            {percentage}%
+          </div>
+          {label && (
+            <div style={{ fontSize: size * 0.1, color: 'var(--color-text-secondary)', marginTop: 2 }}>
+              {label}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // iOS Toast Component
 interface IosToastProps {
   message: string;

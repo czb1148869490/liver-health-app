@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ClipboardCheck, BarChart3, Bell, Settings, Heart, Trophy, BookOpen, Menu, X } from 'lucide-react';
+import { LayoutDashboard, BarChart3, User, Heart, Menu, X } from 'lucide-react';
 import { useThemeColors } from '../../hooks/useResponsive';
 
 const navItems = [
-  { path: '/', label: '首页', icon: LayoutDashboard },
-  { path: '/checkin', label: '打卡', icon: ClipboardCheck },
-  { path: '/statistics', label: '数据', icon: BarChart3 },
-  { path: '/education', label: '学院', icon: BookOpen },
-  { path: '/reminders', label: '提醒', icon: Bell },
-  { path: '/achievements', label: '成就', icon: Trophy },
-  { path: '/settings', label: '设置', icon: Settings },
+  { path: '/', label: '今日', icon: LayoutDashboard },
+  { path: '/trend', label: '趋势', icon: BarChart3 },
+  { path: '/profile', label: '我的', icon: User },
 ];
 
 export function Layout() {
