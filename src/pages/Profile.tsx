@@ -391,19 +391,22 @@ function AchievementsSection({ colors }: { colors: ReturnType<typeof useThemeCol
       <IosCard>
         <h3 style={{ fontSize: 15, fontWeight: 600, color: colors.textSecondary, marginBottom: 12 }}>里程碑进度</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {milestones.slice(0, 3).map((milestone) => (
-            <div key={milestone.id}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                <span style={{ fontSize: 14, color: colors.text }}>{milestone.title}</span>
-                <span style={{ fontSize: 12, color: milestone.completed ? colors.success : colors.textSecondary }}>
-                  {milestone.current} / {milestone.target}
-                </span>
+          {milestones.slice(0, 3).map((milestone) => {
+            const progress = milestone.target > 0 ? Math.min((milestone.current / milestone.target) * 100, 100) : 0;
+            return (
+              <div key={milestone.id}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <span style={{ fontSize: 14, color: colors.text }}>{milestone.title}</span>
+                  <span style={{ fontSize: 12, color: milestone.completed ? colors.success : colors.textSecondary }}>
+                    {milestone.current.toFixed(0)} / {milestone.target}
+                  </span>
+                </div>
+                <Progress.Root style={{ height: 6, background: colors.progressBg, borderRadius: 3, overflow: 'hidden' }} value={progress}>
+                  <Progress.Indicator style={{ height: '100%', background: milestone.completed ? colors.success : colors.primary, transition: 'width 0.3s' }} />
+                </Progress.Root>
               </div>
-              <Progress.Root style={{ height: 6, background: colors.progressBg, borderRadius: 3, overflow: 'hidden' }} value={(milestone.current / milestone.target) * 100}>
-                <Progress.Indicator style={{ height: '100%', background: milestone.completed ? colors.success : colors.primary, transition: 'width 0.3s' }} />
-              </Progress.Root>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </IosCard>
 
@@ -412,16 +415,19 @@ function AchievementsSection({ colors }: { colors: ReturnType<typeof useThemeCol
         <IosCard>
           <h3 style={{ fontSize: 15, fontWeight: 600, color: colors.textSecondary, marginBottom: 12 }}>进行中</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {activeAchievements.slice(0, 3).map((achievement) => (
-              <div key={achievement.id} style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ fontSize: 24, marginRight: 12 }}>{achievement.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: colors.text }}>{achievement.title}</div>
-                  <div style={{ fontSize: 12, color: colors.textSecondary }}>{achievement.progress} / {achievement.target}</div>
+            {activeAchievements.slice(0, 3).map((achievement) => {
+              const progress = achievement.target > 0 ? Math.min((achievement.progress / achievement.target) * 100, 100) : 0;
+              return (
+                <div key={achievement.id} style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ fontSize: 24, marginRight: 12 }}>{achievement.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 14, fontWeight: 500, color: colors.text }}>{achievement.title}</div>
+                    <div style={{ fontSize: 12, color: colors.textSecondary }}>{achievement.progress} / {achievement.target}</div>
+                  </div>
+                  <IosProgress percentage={progress} size={40} strokeWidth={4} showLabel={false} />
                 </div>
-                <IosProgress percentage={(achievement.progress / achievement.target) * 100} size={40} strokeWidth={4} showLabel={false} />
-              </div>
-            ))}
+              );
+            })}
           </div>
         </IosCard>
       )}

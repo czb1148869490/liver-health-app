@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BarChart3, User, Heart, Menu, X } from 'lucide-react';
+import { LayoutDashboard, BarChart3, User, Heart } from 'lucide-react';
 import { useThemeColors } from '../../hooks/useResponsive';
 
 const navItems = [
@@ -13,7 +13,6 @@ export function Layout() {
   const location = useLocation();
   const colors = useThemeColors();
   const [isMobile, setIsMobile] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -23,13 +22,6 @@ export function Layout() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  // Close sidebar when route changes on mobile
-  useEffect(() => {
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
-  }, [location.pathname, isMobile]);
 
   // Desktop Layout
   if (!isMobile) {
@@ -58,7 +50,7 @@ export function Layout() {
             }}>
               <Heart size={18} color="white" />
             </div>
-            <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>健康</span>
+            <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>脂肪肝健康</span>
           </div>
 
           <nav style={{ flex: 1, padding: '12px 10px' }}>
@@ -126,7 +118,7 @@ export function Layout() {
         height: 'calc(44px + env(safe-area-inset-top))',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'center'
       }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{
@@ -141,20 +133,8 @@ export function Layout() {
           }}>
             <Heart size={18} color="white" />
           </div>
-          <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>健康</span>
+          <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>脂肪肝健康</span>
         </div>
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="touch-target"
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 8,
-            cursor: 'pointer'
-          }}
-        >
-          <Menu size={24} color={colors.text} />
-        </button>
       </header>
 
       {/* Mobile Content */}
@@ -217,80 +197,6 @@ export function Layout() {
           );
         })}
       </nav>
-
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 200,
-          }}
-          onClick={() => setSidebarOpen(false)}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: 280,
-              background: colors.cardBg,
-              paddingTop: 'env(safe-area-inset-top)',
-              animation: 'slideIn 0.3s ease'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '16px 20px',
-              borderBottom: `1px solid ${colors.border}`
-            }}>
-              <span style={{ fontSize: 17, fontWeight: 600, color: colors.text }}>菜单</span>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                style={{ background: 'none', border: 'none', padding: 4, cursor: 'pointer' }}
-              >
-                <X size={24} color={colors.textSecondary} />
-              </button>
-            </div>
-
-            <nav style={{ padding: '12px 10px' }}>
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '12px 14px',
-                      borderRadius: 10,
-                      fontSize: 16,
-                      fontWeight: 400,
-                      color: isActive ? colors.primary : colors.text,
-                      background: isActive ? 'rgba(0,122,255,0.1)' : 'transparent',
-                      textDecoration: 'none',
-                      marginBottom: 4,
-                    }}
-                  >
-                    <Icon size={22} style={{ marginRight: 14 }} />
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
