@@ -132,7 +132,7 @@ export function Today() {
   const tip = getTodayTip();
 
   return (
-    <div style={{ maxWidth: isMobile ? '100%' : 500, margin: '0 auto' }} className="page-enter">
+    <div style={{ maxWidth: isMobile ? '100%' : 500, margin: '0 auto' }}>
       {saved && <IosToast message="已保存" type="success" />}
 
       {confirmState.open && (
@@ -417,7 +417,7 @@ function Onboarding() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '0 auto', padding: isMobile ? 16 : 0 }} className="page-enter">
+    <div style={{ maxWidth: 400, margin: '0 auto', padding: isMobile ? 16 : 0 }}>
       <IosCard>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{

@@ -58,7 +58,7 @@ export function Trend() {
   }
 
   return (
-    <div style={{ maxWidth: isMobile ? '100%' : 500, margin: '0 auto' }} className="page-enter">
+    <div style={{ maxWidth: isMobile ? '100%' : 500, margin: '0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontSize: isMobile ? 24 : 28, fontWeight: 700, color: colors.text, margin: 0 }}>
